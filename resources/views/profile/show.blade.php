@@ -1,8 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen bg-azwara-lighter dark:bg-azwara-darkest
-            transition-colors duration-300">
+<div class="min-h-screen">
 
     <div class="max-w-3xl mx-auto">
 
@@ -30,20 +29,11 @@
 
             {{-- Avatar --}}
             <div class="relative shrink-0">
-                @php
-                    $avatar = auth()->user()->avatar;
-                    $avatarPath = $avatar && Storage::disk('public')->exists($avatar)
-                        ? asset('storage/' . $avatar)
-                        : asset('img/user.png');
-                @endphp
-
-                <img
-                    src="{{ $avatarPath }}"
+                <img src="{{ auth()->user()->avatar_url }}"
                     alt="Avatar"
                     class="w-24 h-24 rounded-full object-cover
                         border-4 border-primary
-                        shadow-lg"
-                />
+                        shadow-lg" />
             </div>
 
                 {{-- Identity --}}

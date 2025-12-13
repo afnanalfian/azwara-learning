@@ -3,13 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title ?? 'Azwara Dashboard' }}</title>
+    <title>{{ $title ?? 'Azwara Learning' }}</title>
 
+    {{-- App Assets --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    @stack('styles')
 </head>
 
-<body class="flex bg-azwara-lighter dark:bg-azwara-darkest transition-colors duration-300 overflow-x-hidden">
+<body
+    class="flex min-h-screen overflow-x-hidden
+           bg-gradient-to-br from-azwara-lighter via-azwara-medium/20 to-white
+           dark:bg-brand-gradient
+           bg-fixed bg-no-repeat bg-cover bg-[length:200%_200%]
+           transition-all duration-500">
 
     @include('layouts.partials.sidebar')
 
@@ -22,5 +29,7 @@
 
         @include('layouts.partials.footer')
     </div>
+    @include('layouts.partials.toast')
+    @stack('scripts')
 </body>
 </html>

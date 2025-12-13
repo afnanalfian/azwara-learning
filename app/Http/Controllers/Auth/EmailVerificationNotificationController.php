@@ -15,6 +15,7 @@ class EmailVerificationNotificationController extends Controller
 
         $request->user()->sendEmailVerificationNotification();
 
-        return back()->with('status', 'Link verifikasi telah dikirim ulang.');
+        toast('info','Link verifikasi telah dikirim ulang.');
+        return back();
     }
 }

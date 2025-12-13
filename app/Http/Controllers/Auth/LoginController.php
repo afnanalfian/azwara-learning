@@ -90,9 +90,15 @@ class LoginController extends Controller
                 ])->save();
             }
         );
+        if ($status === Password::PASSWORD_RESET) {
+            toast('success','Password berhasil direset, silakan login.');
+            return redirect()->route('login');
+        }
 
-        return $status === Password::PASSWORD_RESET
-                    ? redirect()->route('login')->with('status', 'Password berhasil direset, silakan login.')
-                    : back()->withErrors(['email' => [__($status)]]);
+        session()->push('toasts', [
+            'type' => 'error',
+            'message' => __($status),
+        ]);
+        return back();
     }
 }

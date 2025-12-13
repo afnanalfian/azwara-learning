@@ -5,10 +5,9 @@
 </div>
 
 <aside id="sidebar"
-       class="fixed md:static z-50 inset-y-0 left-0 w-64 bg-white dark:bg-azwara-darker
+       class="fixed md:static z-50 inset-y-0 left-0 w-64 bg-azwara-lighter dark:bg-azwara-darker
               border-r border-gray-200 dark:border-azwara-darkest
-              transform -translate-x-full md:translate-x-0
-              transition-all duration-300 ease-in-out shadow-xl md:shadow-none">
+              transform -translate-x-full md:translate-x-0">
 
     <div class="flex flex-col items-center py-6 gap-4">
 

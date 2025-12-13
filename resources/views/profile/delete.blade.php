@@ -1,15 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen
-            bg-azwara-lighter dark:bg-azwara-darkest
-            transition-colors duration-300">
+<div class="min-h-screen">
 
     <div class="max-w-xl mx-auto">
 
         {{-- Tombol Kembali --}}
         <div class="mb-4">
-            <a href="{{ url()->previous() }}"
+            <a href="{{ route('profile.show') }}"
                class="inline-flex items-center gap-2
                       text-sm font-medium
                       text-azwara-darkest dark:text-azwara-lighter
@@ -53,16 +51,16 @@
             </div>
 
             <form method="POST"
-                  action="{{ route('profile.destroy') }}"
-                  x-data="{ other: false }"
-                  class="space-y-6">
+                action="{{ route('profile.destroy') }}"
+                x-data="{ other: false }"
+                class="space-y-6 sweet-confirm"
+                data-message="Yakin ingin menghapus akun? Akun masih bisa diaktifkan kembali dalam 10 hari.">
                 @csrf
 
                 {{-- Reason --}}
                 <div>
-                    <label class="form-label-required
-                                  block text-sm font-medium
-                                  text-azwara-darkest dark:text-azwara-light">
+                    <label class="form-label-required block text-sm font-medium
+                                text-azwara-darkest dark:text-azwara-light">
                         Alasan Penghapusan
                     </label>
 
@@ -79,36 +77,26 @@
 
                     {{-- Custom reason --}}
                     <input type="text"
-                           x-show="other"
-                           x-transition
-                           name="reason_custom"
-                           placeholder="Tuliskan alasan Anda..."
-                           class="input-primary mt-3">
+                        x-show="other"
+                        x-transition
+                        name="reason_custom"
+                        placeholder="Tuliskan alasan Anda..."
+                        class="input-primary mt-3">
                 </div>
 
                 {{-- Warning Box --}}
-                <div
-                    class="rounded-xl
-                           bg-red-50 dark:bg-red-500/10
-                           border border-red-200 dark:border-red-500/30
-                           p-4 text-sm
-                           text-red-600 dark:text-red-400">
+                <div class="rounded-xl bg-red-50 dark:bg-red-500/10
+                            border border-red-200 dark:border-red-500/30 p-4 text-sm
+                            text-red-600 dark:text-red-400">
                     ⚠️ Pastikan Anda benar-benar yakin sebelum melanjutkan.
                 </div>
 
                 {{-- Action --}}
                 <button type="submit"
-                        onclick="return confirm(
-                          'Yakin ingin menghapus akun?\n\n' +
-                          'Akun masih bisa diaktifkan kembali dalam 10 hari.'
-                        )"
-                        class="w-full py-3 rounded-xl
-                               bg-red-600 hover:bg-red-700
-                               text-white font-semibold
-                               transition">
+                        class="w-full py-3 rounded-xl bg-red-600 hover:bg-red-700
+                            text-white font-semibold transition">
                     Hapus Akun Permanen
                 </button>
-
             </form>
         </div>
     </div>

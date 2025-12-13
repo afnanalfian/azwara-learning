@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="min-h-screen bg-azwara-lighter dark:bg-azwara-darkest p-8 transition-colors duration-300">
+<div class="min-h-screen p-8 transition-colors duration-300">
     <h1 class="text-xl font-bold text-azwara-darkest dark:text-azwara-lighter">
         Dashboard Admin
     </h1>

@@ -15,13 +15,14 @@ class AdminUserSeeder extends Seeder
         $admin = User::firstOrCreate(
             ['email' => 'admin@bimbel.com'],  // <-- ganti sesuai kebutuhan
             [
-                'name' => 'Muhammad Afnan Alfian',
-                'password' => Hash::make('password123'),  // <-- ganti password
+                'name' => 'Admin',
+                'password' => Hash::make('password'),  // <-- ganti password
                 'province_id' => 73,
                 'regency_id' => 7309,
                 'phone' => '082154734819',
                 'avatar' => null,
                 'is_active' => true,
+                'email_verified_at' => '2025-11-28 23:26:22',
             ]
         );
 

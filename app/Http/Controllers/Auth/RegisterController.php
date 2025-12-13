@@ -52,6 +52,7 @@ class RegisterController extends Controller
         // auto login user
         auth()->login($user);
 
+        toast('success','Akun berhasil dibuat. Silakan verifikasi email Anda.');
         return redirect()->route('verification.notice');
     }
 }

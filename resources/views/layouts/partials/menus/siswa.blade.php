@@ -8,7 +8,7 @@
   Dashboard
 </a>
 
-<a class="menu-item">
+<a href="{{ route('course.index') }}" class="menu-item">
   <!-- Course (book-closed) -->
   <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none"
        viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
@@ -37,4 +37,13 @@
           d="M12 18h.01M12 6a6 6 0 00-6 6h2a4 4 0 118 0c0 1.5-.5 2.5-2 3.5"/>
   </svg>
   Daily Quiz
+</a>
+<a href="{{ route('tentor.index') }}" class="menu-item">
+  <!-- Tentor (user-group) -->
+  <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none"
+       viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+    <path stroke-linecap="round" stroke-linejoin="round"
+          d="M17 20h5v-2a4 4 0 00-4-4h-1m-6 6H4v-2a4 4 0 014-4h1m0-4a4 4 0 118 0 4 4 0 01-8 0z"/>
+  </svg>
+  Tentor
 </a>

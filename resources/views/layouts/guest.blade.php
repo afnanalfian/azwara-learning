@@ -89,7 +89,7 @@
     <main class="flex-1">
         @yield('content')
     </main>
-
+    @include('layouts.partials.toast')
     {{-- Footer --}}
     <footer
     class="py-6 text-center text-sm

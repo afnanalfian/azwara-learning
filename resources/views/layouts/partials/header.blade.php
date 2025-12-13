@@ -1,4 +1,4 @@
-<header class="w-full bg-white dark:bg-azwara-darker shadow-sm px-6 py-4 flex justify-between items-center">
+<header class="w-full bg-azwara-lighter dark:bg-azwara-darker shadow-sm px-6 py-4 flex justify-between items-center">
 
     {{-- Hamburger button (desktop & mobile) --}}
     <button
@@ -10,7 +10,7 @@
     </button>
 
     <h1 class="text-lg font-semibold text-azwara-darkest dark:text-azwara-lighter">
-        {{ $title ?? 'Dashboard' }}
+        {{-- {{ $title ?? 'Dashboard' }} --}}
     </h1>
 
     <div class="flex items-center gap-6">
@@ -45,10 +45,8 @@
                 <span class="hidden md:block text-azwara-darkest dark:text-azwara-lighter font-medium">
                     {{ auth()->user()->name }}
                 </span>
-                <img src="{{ auth()->user()->avatar
-                    ? asset('storage/' . auth()->user()->avatar)
-                    : asset('img/user.png') }}"
-                    class="w-10 h-10 rounded-full border border-azwara-medium object-cover" />
+            <img src="{{ auth()->user()->avatar_url }}"
+                class="w-10 h-10 rounded-full border border-azwara-medium object-cover" />
             </button>
 
             <!-- Dropdown Panel -->
@@ -56,7 +54,7 @@
                 @click.outside="open = false"
                 x-transition
                 x-cloak
-                class="absolute right-0 mt-2 w-40 bg-white dark:bg-azwara-darker shadow-md rounded-lg p-2">
+                class="absolute right-0 mt-2 w-40 bg-white dark:bg-azwara-darker shadow-md rounded-lg p-2 z-50">
                 <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-azwara-darkest dark:text-azwara-lighter hover:bg-azwara-lighter/50 dark:hover:bg-azwara-medium/20 rounded">
                     Profil
                 </a>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\AccountDeletionLog;
+use App\Models\Province;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,23 +13,33 @@ class ProfileController extends Controller
 {
     public function show()
     {
-        return view('profile.show');
+        return view('profile.show')->with('title','Profil Saya');
     }
 
     public function edit()
     {
-        return view('profile.edit');
+        $user = auth()->user();
+        $provinces = Province::orderBy('id')->get();
+
+        return view('profile.edit', compact('user', 'provinces'))
+            ->with('title', 'Edit Profil');
     }
 
     public function update(Request $request)
     {
-        $user = Auth::user();
+        $user = auth()->user();
 
         $data = $request->validate([
             'name'        => 'required|string|max:255',
             'phone'       => 'nullable|string',
+            'province_id' => 'nullable|exists:provinces,id',
+            'regency_id'  => 'nullable|exists:regencies,id',
             'avatar'      => 'nullable|image|max:2048',
         ]);
+
+        if (!$request->filled('province_id')) {
+            unset($data['province_id'], $data['regency_id']);
+        }
 
         if ($request->hasFile('avatar')) {
             $data['avatar'] = $request->avatar->store('avatars', 'public');
@@ -36,13 +47,14 @@ class ProfileController extends Controller
 
         $user->update($data);
 
-        return redirect()->route('profile.show')
-            ->with('success', 'Profil berhasil diperbarui');
+        toast('success','Profil berhasil diperbarui.');
+
+        return redirect()->route('profile.show');
     }
 
     public function password()
     {
-        return view('profile.password');
+        return view('profile.password')->with('title','Ganti Password');
     }
 
     public function updatePassword(Request $request)
@@ -55,19 +67,23 @@ class ProfileController extends Controller
         $user = Auth::user();
 
         if (!Hash::check($request->current_password, $user->password)) {
-            return back()->withErrors(['current_password' => 'Password saat ini salah']);
+            toast('error','Password saat ini salah.');
+
+            return back();
         }
 
         $user->update([
             'password' => Hash::make($request->password)
         ]);
 
-        return redirect()->route('profile.show')->with('success', 'Password berhasil diubah');
+        toast('success','Password berhasil diubah.');
+
+        return redirect()->route('profile.show');
     }
 
     public function delete()
     {
-        return view('profile.delete');
+        return view('profile.delete')->with('title','Hapus Akun');
     }
 
     public function destroy(Request $request)
@@ -79,7 +95,6 @@ class ProfileController extends Controller
 
         $user = auth()->user();
 
-        // Insert log
         AccountDeletionLog::create([
             'user_id'       => $user->id,
             'reason_option' => $request->reason_option,
@@ -90,13 +105,13 @@ class ProfileController extends Controller
             'deleted_at'     => null,
         ]);
 
-        // Nonaktifkan akun
         $user->is_active = 0;
         $user->save();
 
         auth()->logout();
 
-        return redirect('/')
-            ->with('success', 'Akun dinonaktifkan. Anda bisa mengaktifkan kembali dengan login dalam 10 hari.');
+        toast('info','Akun dinonaktifkan. Anda bisa mengaktifkan kembali dengan login dalam 10 hari.');
+
+        return redirect('/');
     }
 }

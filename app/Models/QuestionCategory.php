@@ -4,20 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class QuestionCategory extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
-    protected $fillable = ['course_id', 'name'];
+    protected $fillable = [
+        'name',
+        'slug',
+        'thumbnail',
+        'description',
+    ];
 
-    public function course()
+    public function materials()
     {
-        return $this->belongsTo(Course::class);
-    }
-
-    public function subjects()
-    {
-        return $this->hasMany(QuestionSubject::class);
+        return $this->hasMany(QuestionMaterial::class, 'category_id');
     }
 }

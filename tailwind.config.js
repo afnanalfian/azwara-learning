@@ -24,6 +24,7 @@ export default {
                     medium:   "#5483B3",
                     light:    "#7DA0CA",
                     lighter:  "#C1E8FF",
+                    lightest: "#E6F7FF",
                 },
 
                 primary: "#5483B3",

@@ -4,30 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Question extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'subject_id',
+        'material_id',
+        'type',
         'question_text',
-        'answer_key',
+        'image',
         'explanation',
     ];
 
-    public function subject()
+    public function material()
     {
-        return $this->belongsTo(QuestionSubject::class);
+        return $this->belongsTo(QuestionMaterial::class, 'material_id');
     }
 
-    public function choices()
+    public function options()
     {
-        return $this->hasMany(QuestionChoice::class);
-    }
-
-    public function explanation()
-    {
-        return $this->hasOne(QuestionExplanation::class);
+        return $this->hasMany(QuestionOption::class, 'question_id');
     }
 }

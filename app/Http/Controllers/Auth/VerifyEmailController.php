@@ -16,8 +16,7 @@ class VerifyEmailController extends Controller
 
         $request->fulfill();
 
-        // Setelah verifikasi, langsung redirect ke dashboard
-        return redirect()->route('dashboard.redirect')
-            ->with('verified', 'Akun Anda berhasil diverifikasi!');
+        toast('success','Akun Anda berhasil diverifikasi!');
+        return redirect()->route('dashboard.redirect');
     }
 }

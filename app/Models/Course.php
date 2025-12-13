@@ -14,12 +14,11 @@ class Course extends Model
         'slug',
         'description',
         'thumbnail',
-        'teacher_id',
     ];
 
-    public function teacher()
+    public function teachers()
     {
-        return $this->belongsTo(User::class, 'teacher_id');
+        return $this->belongsToMany(Teacher::class, 'course_teacher');
     }
 
     public function meetings()

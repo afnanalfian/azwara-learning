@@ -1,15 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen
-            bg-azwara-lighter dark:bg-azwara-darkest
-            py-10 px-4 transition-colors duration-300">
+<div class="min-h-screen">
 
     <div class="max-w-xl mx-auto">
 
         {{-- Tombol Kembali --}}
         <div class="mb-4">
-            <a href="{{ url()->previous() }}"
+            <a href="{{ route('profile.show') }}"
                class="inline-flex items-center gap-2
                       text-sm font-medium
                       text-azwara-darkest dark:text-azwara-lighter
