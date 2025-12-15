@@ -7,17 +7,18 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('meeting_videos', function (Blueprint $table) {
+        Schema::create('meeting_post_tests', function (Blueprint $table) {
             $table->id();
             $table->foreignId('meeting_id')->constrained()->cascadeOnDelete();
-            $table->string('bunny_video_id')->nullable();
-            $table->string('video_url')->nullable(); // CDN link
+            $table->integer('duration_minutes');
+            $table->enum('status', ['inactive','active','closed'])->default('inactive');
+            $table->timestamp('launched_at')->nullable();
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('meeting_videos');
+        Schema::dropIfExists('meeting_post_tests');
     }
 };

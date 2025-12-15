@@ -12,28 +12,57 @@ class Meeting extends Model
     protected $fillable = [
         'course_id',
         'title',
-        'description',
-        'start_datetime',
+        'slug',
+        'datetime',
+        'start_at',
         'zoom_link',
-        'recording_url',
+        'status',
+        'created_by',
+    ];
+    protected $casts = [
+        'datetime' => 'datetime',
+        'start_at' => 'datetime',
     ];
 
     public function course()
     {
         return $this->belongsTo(Course::class);
     }
-
-    public function materials()
+    public function creator()
     {
-        return $this->hasMany(MeetingMaterial::class);
+        return $this->belongsTo(User::class, 'created_by');
     }
-
+    public function material()
+    {
+        return $this->hasOne(MeetingMaterial::class);
+    }
     public function postTest()
     {
         return $this->hasOne(MeetingPostTest::class);
     }
+    public function attendances()
+    {
+        return $this->hasMany(MeetingAttendance::class);
+    }
     public function video()
     {
         return $this->hasOne(MeetingVideo::class);
+    }
+
+    /* ================= HELPERS ================= */
+
+    public function isUpcoming(): bool
+    {
+        return $this->status === 'upcoming';
+    }
+
+    public function isLive(): bool
+    {
+        return $this->status === 'live';
+    }
+
+    public function isDone(): bool
+    {
+        return $this->status === 'done';
     }
 }

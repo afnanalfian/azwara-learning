@@ -2,7 +2,7 @@
 
 @section('content')
 
-<h1 class="text-2xl font-bold mb-6">{{ $course->name }}</h1>
+{{-- <h1 class="text-2xl font-bold mb-6">{{ $course->name }}</h1>
 
 <div class="bg-white dark:bg-azwara-darker shadow rounded-xl p-6 mb-8">
 
@@ -17,9 +17,9 @@
         <strong>Tentor:</strong>
         {{ $course->teachers->count() ? $course->teachers->pluck('user.name')->join(', ') : '-' }}
     </p>
-</div>
+</div> --}}
 
-<h2 class="text-xl font-bold mb-4">Daftar Pertemuan</h2>
+<h1 class="text-xl font-bold mb-4">Daftar Pertemuan - {{ $course->name }}</h1>
 
 <table class="w-full text-left border-collapse">
     <thead>

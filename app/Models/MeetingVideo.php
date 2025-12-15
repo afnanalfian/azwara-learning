@@ -11,12 +11,18 @@ class MeetingVideo extends Model
 
     protected $fillable = [
         'meeting_id',
-        'video_url',
-        'bunny_video_id'
+        'bunny_video_id',
+        'playback_url',
+        'library_id',
+        'status',
     ];
 
     public function meeting()
     {
         return $this->belongsTo(Meeting::class);
+    }
+    public function isReady(): bool
+    {
+        return $this->status === 'ready';
     }
 }

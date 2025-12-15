@@ -74,7 +74,7 @@
                                 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
 
                         <div class="text-base text-gray-800 dark:text-gray-100">
-                            <strong>{{ strtoupper($opt->key) }}</strong>
+                            <strong>{{ $opt->label }}</strong>.
                             {!! $opt->option_text !!}
                         </div>
 

@@ -10,8 +10,8 @@ return new class extends Migration {
         Schema::create('meeting_materials', function (Blueprint $table) {
             $table->id();
             $table->foreignId('meeting_id')->constrained()->cascadeOnDelete();
-            $table->longText('content'); // HTML ringkasan materi
-            $table->timestamps();
+            $table->string('file_path');
+            $table->string('original_name');
         });
     }
 

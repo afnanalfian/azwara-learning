@@ -11,7 +11,8 @@ class MeetingMaterial extends Model
 
     protected $fillable = [
         'meeting_id',
-        'content', // HTML full
+        'file_path',
+        'original_name',
     ];
 
     public function meeting()

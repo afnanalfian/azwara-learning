@@ -26,4 +26,8 @@ class QuestionOption extends Model
     {
         return $this->belongsTo(Question::class, 'question_id');
     }
+    public function getLabelAttribute(): string
+    {
+        return chr(64 + $this->order); // 1=A, 2=B, 3=C
+    }
 }

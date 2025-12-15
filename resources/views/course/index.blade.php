@@ -102,7 +102,7 @@
 
                 {{-- DELETE WITH SWEETALERT --}}
                 <form method="POST"
-                    action="{{ route('course.destroy', $c->slug) }}"
+                    action="{{ route('course.delete', $c->slug) }}"
                     class="sweet-confirm"
                     data-message="Yakin ingin menghapus course ini? Semua meeting dan datanya akan hilang secara permanen.">
                     @csrf

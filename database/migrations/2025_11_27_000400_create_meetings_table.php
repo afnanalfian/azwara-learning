@@ -10,15 +10,12 @@ class CreateMeetingsTable extends Migration
     {
         Schema::create('meetings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
+            $table->foreignId('course_id')->constrained()->cascadeOnDelete();
             $table->string('title');
             $table->string('slug')->nullable()->unique();
-            $table->text('description')->nullable();
-            $table->longText('summary')->nullable(); // ringkasan materi (HTML)
-            $table->dateTime('start_at')->nullable();
-            $table->dateTime('end_at')->nullable();
+            $table->dateTime('scheduled_at');
+            $table->timestamp('started_at')->nullable();
             $table->string('zoom_link')->nullable();
-            $table->string('recording_url')->nullable(); // Bunny playback URL
             $table->enum('status', ['upcoming','live','done','cancelled'])->default('upcoming');
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null'); // tentor/admin yang buat
             $table->timestamps();

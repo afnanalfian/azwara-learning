@@ -9,9 +9,14 @@
         </svg>
     </button>
 
-    <h1 class="text-lg font-semibold text-azwara-darkest dark:text-azwara-lighter">
-        {{-- {{ $title ?? 'Dashboard' }} --}}
-    </h1>
+    {{-- <h1 class="text-lg font-semibold text-azwara-darkest dark:text-azwara-lighter">
+    </h1> --}}
+
+    {{-- Logo --}}
+    <a href="{{ route('dashboard.redirect') }}"
+    class="text-xl font-bold text-azwara-darker dark:text-white tracking-wide">
+        Azwara<span class="text-primary">Learning</span>
+    </a>
 
     <div class="flex items-center gap-6">
 
