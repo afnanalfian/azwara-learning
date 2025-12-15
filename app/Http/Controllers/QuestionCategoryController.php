@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\QuestionCategory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class QuestionCategoryController extends Controller
 {
@@ -28,7 +27,7 @@ class QuestionCategoryController extends Controller
         ]);
 
         $data = $request->only('name','description');
-        $data['slug'] = Str::slug($request->name);
+        $data['slug'] = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $request->name));
 
         if ($request->hasFile('thumbnail')) {
             $data['thumbnail'] = $request->file('thumbnail')
@@ -42,16 +41,13 @@ class QuestionCategoryController extends Controller
         return redirect()->route('bank.category.index');
     }
 
-    public function edit($id)
+    public function edit(QuestionCategory $category)
     {
-        $category = QuestionCategory::findOrFail($id);
         return view('bank.category.edit', compact('category'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, QuestionCategory $category)
     {
-        $category = QuestionCategory::findOrFail($id);
-
         $request->validate([
             'name'        => 'required|max:255',
             'thumbnail'   => 'nullable|image',
@@ -60,9 +56,8 @@ class QuestionCategoryController extends Controller
 
         $data = $request->only('name','description');
 
-        // Update slug only if changed
         if ($request->name !== $category->name) {
-            $data['slug'] = Str::slug($request->name);
+            $data['slug'] = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $request->name));
         }
 
         if ($request->hasFile('thumbnail')) {
@@ -77,10 +72,8 @@ class QuestionCategoryController extends Controller
         return redirect()->route('bank.category.index');
     }
 
-    public function destroy($id)
+    public function destroy(QuestionCategory $category)
     {
-        $category = QuestionCategory::findOrFail($id);
-
         if ($category->materials()->exists()) {
             toast('error','Kategori tidak bisa dihapus, masih ada materi.');
             return back();
@@ -90,6 +83,6 @@ class QuestionCategoryController extends Controller
 
         toast('warning','Kategori telah dihapus.');
 
-        return redirect()->route('bank.category.index');
+        return back();
     }
 }

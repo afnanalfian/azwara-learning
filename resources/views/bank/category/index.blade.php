@@ -52,7 +52,7 @@
             class="group bg-white dark:bg-azwara-darker rounded-2xl shadow-md overflow-hidden
                    border border-gray-100 dark:border-azwara-darkest hover:shadow-xl transition">
 
-            <a href="{{ route('bank.category.materials.index', $cat->id) }}" class="block">
+            <a href="{{ route('bank.category.materials.index', $cat) }}" class="block">
 
                 {{-- Thumbnail --}}
                 <div class="relative">
@@ -90,7 +90,7 @@
             {{-- FOOTER ACTIONS --}}
             @role('admin')
             <div class="flex items-center justify-between gap-3 p-3 sm:p-4 border-t border-gray-100 dark:border-azwara-darkest">
-                <a href="{{ route('bank.category.edit', $cat->id) }}"
+                <a href="{{ route('bank.category.edit', $cat) }}"
                     class="px-3 py-1.5 rounded-lg text-sm bg-azwara-medium/10 text-azwara-darker dark:text-azwara-lighter
                        hover:bg-azwara-medium/20 transition">
                     Edit
@@ -98,7 +98,7 @@
 
                 {{-- Delete button --}}
                 <form method="POST"
-                    action="{{ route('bank.category.delete', $cat->id) }}"
+                    action="{{ route('bank.category.delete', $cat) }}"
                     class="sweet-confirm"
                     data-message="Yakin ingin menghapus kategori ini? Semua materi dan soal di dalamnya akan ikut terhapus secara permanen.">
                     @csrf

@@ -20,7 +20,7 @@
     @endif
 
 
-    <form action="{{ route('bank.category.update', $category->id) }}" method="POST" enctype="multipart/form-data" class="space-y-5">
+    <form action="{{ route('bank.category.update', $category) }}" method="POST" enctype="multipart/form-data" class="space-y-5">
         @csrf
         @method('PUT')
 

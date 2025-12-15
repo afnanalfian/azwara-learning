@@ -20,7 +20,7 @@
     @endif
 
     <form
-        action="{{ route('bank.material.update', $material->id) }}"
+        action="{{ route('bank.material.update', $material) }}"
         method="POST"
         class="space-y-5">
 

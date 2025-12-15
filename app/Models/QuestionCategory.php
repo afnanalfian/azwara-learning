@@ -16,7 +16,10 @@ class QuestionCategory extends Model
         'thumbnail',
         'description',
     ];
-
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
     public function materials()
     {
         return $this->hasMany(QuestionMaterial::class, 'category_id');

@@ -13,15 +13,15 @@ class Meeting extends Model
         'course_id',
         'title',
         'slug',
-        'datetime',
-        'start_at',
+        'scheduled_at',
+        'started_at',
         'zoom_link',
         'status',
         'created_by',
     ];
     protected $casts = [
-        'datetime' => 'datetime',
-        'start_at' => 'datetime',
+        'scheduled_at' => 'datetime',
+        'started_at' => 'datetime',
     ];
 
     public function course()

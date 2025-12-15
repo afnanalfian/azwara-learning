@@ -12,7 +12,7 @@
     </div>
 
     @role('admin|tentor')
-        <a href="{{ route('bank.material.questions.create', $material->id) }}"
+        <a href="{{ route('bank.material.questions.create', $material) }}"
            class="px-4 py-2 bg-azwara-darker text-white rounded-xl hover:bg-azwara-medium transition">
             + Tambah Soal
         </a>
@@ -20,7 +20,7 @@
 </div>
 {{-- Tombol Kembali --}}
 <div class="mb-4">
-    <a href="{{ route('bank.category.materials.index', $material->category_id) }}"
+    <a href="{{ route('bank.category.materials.index', $material->category) }}"
         class="inline-flex items-center gap-2
                 text-sm font-medium
                 text-azwara-darkest dark:text-azwara-lighter
@@ -147,7 +147,7 @@
         <div class="flex justify-end gap-3 mt-6 border-t pt-4">
 
             {{-- EDIT --}}
-            <a href="{{ route('bank.question.edit', $q->id) }}"
+            <a href="{{ route('bank.question.edit', $q) }}"
                 class="px-4 py-2 rounded-lg bg-azwara-medium/10
                     text-azwara-darker dark:text-azwara-lighter hover:bg-azwara-medium/20 transition">
                 Edit
@@ -155,7 +155,7 @@
 
             {{-- DELETE (SweetAlert) --}}
             <form method="POST"
-                action="{{ route('bank.question.delete', $q->id) }}"
+                action="{{ route('bank.question.delete', $q) }}"
                 class="sweet-confirm"
                 data-message="Yakin ingin menghapus soal ini? Tindakan ini tidak dapat dibatalkan.">
                 @csrf

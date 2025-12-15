@@ -20,7 +20,7 @@
     @endif
 
     <form
-        action="{{ route('bank.category.materials.store', $category->id) }}"
+        action="{{ route('bank.category.materials.store', $category) }}"
         method="POST"
         class="space-y-5">
 

@@ -2,7 +2,7 @@
 
 @section('content')
 <form method="POST"
-      action="{{ route('bank.question.update', $question->id) }}"
+      action="{{ route('bank.question.update', $question) }}"
       enctype="multipart/form-data"
       class="max-w-5xl mx-auto space-y-6">
 

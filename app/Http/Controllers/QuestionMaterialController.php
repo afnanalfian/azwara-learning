@@ -9,80 +9,73 @@ use Illuminate\Support\Str;
 
 class QuestionMaterialController extends Controller
 {
-    public function index($category_id)
+    public function index(QuestionCategory $category)
     {
-        $category = QuestionCategory::findOrFail($category_id);
         $materials = $category->materials()->paginate(15);
-
         return view('bank.material.index', compact('category', 'materials'));
     }
 
-    public function create($category_id)
+    public function create(QuestionCategory $category)
     {
-        $category = QuestionCategory::findOrFail($category_id);
         return view('bank.material.create', compact('category'));
     }
 
-    public function store(Request $request, $category_id)
+    public function store(Request $request, QuestionCategory $category)
     {
         $request->validate([
             'name' => 'required|max:255',
         ]);
 
         QuestionMaterial::create([
-            'category_id' => $category_id,
+            'category_id' => $category->id,
             'name'        => $request->name,
-            'slug'        => Str::slug($request->name),
+            'slug'        => strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $request->name)),
         ]);
 
         toast('success','Materi berhasil ditambahkan.');
 
-        return redirect()->route('bank.category.materials.index', $category_id);
+        return redirect()->route('bank.category.materials.index', $category);
     }
 
-    public function edit($id)
+    public function edit(QuestionMaterial $material)
     {
-        $material  = QuestionMaterial::findOrFail($id);
-        $category  = $material->category;
+        $category = $material->category;
 
         return view('bank.material.edit', compact('material', 'category'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, QuestionMaterial $material)
     {
-        $material = QuestionMaterial::findOrFail($id);
-
         $request->validate([
             'name' => 'required|max:255',
         ]);
 
-        $data = $request->only('name');
+        $data['name'] = $request->name;
 
         if ($request->name !== $material->name) {
-            $data['slug'] = Str::slug($request->name);
+            $data['slug'] = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $request->name));
         }
 
         $material->update($data);
 
         toast('success','Materi berhasil diupdate.');
 
-        return redirect()->route('bank.category.materials.index', $material->category_id);
+        return redirect()->route('bank.category.materials.index', $material->category);
     }
 
-    public function destroy($id)
+    public function destroy(QuestionMaterial $material)
     {
-        $material = QuestionMaterial::findOrFail($id);
-
         if ($material->questions()->exists()) {
             toast('error','Materi tidak bisa dihapus, masih ada soal.');
             return back();
         }
 
-        $category_id = $material->category_id;
+        $category = $material->category;
         $material->delete();
 
         toast('warning','Materi berhasil dihapus.');
 
-        return redirect()->route('bank.category.materials.index', $category_id);
+        return redirect()->route('bank.category.materials.index', $category);
     }
 }
+

@@ -7,6 +7,12 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\TentorController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\MeetingController;
+use App\Http\Controllers\MeetingPostTestController;
+use App\Http\Controllers\MeetingPostTestAttemptController;
+use App\Http\Controllers\MeetingAttendanceController;
+use App\Http\Controllers\MeetingVideoController;
+use App\Http\Controllers\BunnyWebHookController;
 use App\Http\Controllers\QuestionCategoryController;
 use App\Http\Controllers\QuestionMaterialController;
 use App\Http\Controllers\QuestionController;
@@ -134,6 +140,78 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{slug}',      [CourseController::class, 'show'])->name('course.show');
     });
 
+    /*
+    |--------------------------------------------------------------------------
+    | MEETING ROUTES
+    |--------------------------------------------------------------------------
+    */
+
+    // ADMIN & TENTOR
+    Route::middleware(['role:admin|tentor'])->group(function () {
+
+        // CREATE MEETING (di dalam course)
+        Route::get('/course/{course}/meetings/create',[MeetingController::class, 'create'] )->name('meeting.create');
+        Route::post('/course/{course}/meetings/store', [MeetingController::class, 'store'] )->name('meeting.store');
+        // START / FINISH / CANCEL
+        Route::post('/meetings/{meeting}/start', [MeetingController::class, 'start'])->name('meeting.start');
+        Route::post('/meetings/{meeting}/finish', [MeetingController::class, 'finish'])->name('meeting.finish');
+        Route::post('/meetings/{meeting}/cancel',[MeetingController::class, 'cancel'] )->name('meeting.cancel');
+        // DELETE MEETING
+        Route::delete('/meetings/{meeting}/delete', [MeetingController::class, 'destroy'] )->name('meeting.delete');
+    });
+
+    // ALL ROLES (ADMIN / TENTOR / SISWA)
+    Route::middleware(['role:admin|tentor|siswa'])->group(function () {
+        Route::get('/meetings/{meeting}', [MeetingController::class, 'show'])->name('meeting.show');
+        Route::get('/meetings/{meeting}/join-zoom', [MeetingController::class, 'joinZoom'])->name('meeting.joinZoom');
+
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | MEETING POST TEST ROUTES
+    |--------------------------------------------------------------------------
+    */
+
+    // ADMIN & TENTOR
+    Route::middleware(['role:admin|tentor'])->group(function () {
+        Route::post('/meetings/{meeting}/post-test', [MeetingPostTestController::class, 'store']  )->name('posttest.store');
+        Route::get('/post-tests/{postTest}/edit',  [MeetingPostTestController::class, 'edit']  )->name('posttest.edit');
+        Route::post('/post-tests/{postTest}/questions',  [MeetingPostTestController::class, 'attachQuestions'] )->name('posttest.questions.attach');
+        Route::post('/post-tests/{postTest}/launch', [MeetingPostTestController::class, 'launch'] )->name('posttest.launch');
+        Route::post('/post-tests/{postTest}/close', [MeetingPostTestController::class, 'close']  )->name('posttest.close');
+    });
+
+    // SISWA
+    Route::middleware(['role:admin|siswa'])->group(function () {
+        Route::post('/post-tests/{postTest}/start', [MeetingPostTestAttemptController::class, 'start'])->name('posttest.attempt.start');
+        Route::get('/post-test-attempts/{attempt}', [MeetingPostTestAttemptController::class, 'show'])->name('posttest.attempt.show');
+        Route::post('/post-test-attempts/{attempt}/answer',[MeetingPostTestAttemptController::class, 'saveAnswer'])->name('posttest.answer.save');
+        Route::post('/post-test-attempts/{attempt}/submit',[MeetingPostTestAttemptController::class, 'submit'])->name('posttest.submit');
+        Route::get('/post-test-attempts/{attempt}/result', [MeetingPostTestAttemptController::class, 'result'])->name('posttest.result');
+    });
+    /*
+    |--------------------------------------------------------------------------
+    | MEETING ATTENDANCE ROUTES
+    |--------------------------------------------------------------------------
+    */
+
+    Route::middleware(['role:admin|tentor'])->group(function () {
+        Route::get('/meetings/{meeting}/attendance',  [MeetingAttendanceController::class, 'index'])->name('meeting.attendance.index');
+        Route::post('/meetings/{meeting}/attendance', [MeetingAttendanceController::class, 'store'] )->name('meeting.attendance.store');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | MEETING VIDEO ROUTES (BUNNY STREAM) & BUNNY WEBHOOK
+    |--------------------------------------------------------------------------
+    */
+
+    Route::middleware(['role:admin|tentor'])->group(function () {
+        Route::post('/meetings/{meeting}/video', [MeetingVideoController::class, 'store'])->name('meeting.video.store');
+        Route::delete('/meetings/{meeting}/video',[MeetingVideoController::class, 'destroy'])->name('meeting.video.destroy');
+        Route::post('/webhooks/bunny', [BunnyWebhookController::class, 'handle'])->name('webhooks.bunny');
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -147,31 +225,31 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/',[QuestionCategoryController::class, 'index'])->name('index');
             Route::get('/create',[QuestionCategoryController::class, 'create'])->name('create');
             Route::post('/store',[QuestionCategoryController::class, 'store'])->name('store');
-            Route::get('/{id}/edit',[QuestionCategoryController::class, 'edit'])->name('edit');
-            Route::put('/{id}',[QuestionCategoryController::class, 'update'])->name('update');
-            Route::delete('/{id}',[QuestionCategoryController::class, 'destroy'])->name('delete');
+            Route::get('/{category}/edit',[QuestionCategoryController::class, 'edit'])->name('edit');
+            Route::put('/{category}',[QuestionCategoryController::class, 'update'])->name('update');
+            Route::delete('/{category}',[QuestionCategoryController::class, 'destroy'])->name('delete');
 
-            Route::get('/{category_id}/materials',[QuestionMaterialController::class, 'index'])->name('materials.index');
-            Route::get('/{category_id}/materials/create',[QuestionMaterialController::class, 'create'])->name('materials.create');
-            Route::post('/{category_id}/materials/store',[QuestionMaterialController::class, 'store'])->name('materials.store');
+            Route::get('/{category}/materials',[QuestionMaterialController::class, 'index'])->name('materials.index');
+            Route::get('/{category}/materials/create',[QuestionMaterialController::class, 'create'])->name('materials.create');
+            Route::post('/{category}/materials/store',[QuestionMaterialController::class, 'store'])->name('materials.store');
         });
 
         // MATERI SOAL UNTUK EDIT/UPDATE/DELETE
-        Route::get('/materials/{id}/edit',[QuestionMaterialController::class, 'edit'])->name('material.edit');
-        Route::put('/materials/{id}',[QuestionMaterialController::class, 'update'])->name('material.update');
-        Route::delete('/materials/{id}',[QuestionMaterialController::class, 'destroy'])->name('material.delete');
+        Route::get('/materials/{material}/edit',[QuestionMaterialController::class, 'edit'])->name('material.edit');
+        Route::put('/materials/{material}',[QuestionMaterialController::class, 'update'])->name('material.update');
+        Route::delete('/materials/{material}',[QuestionMaterialController::class, 'destroy'])->name('material.delete');
 
 
         // SOAL SOAL
         Route::prefix('materials')->name('material.')->group(function () {
-            Route::get('/{material_id}/questions',[QuestionController::class, 'index'])->name('questions.index');
-            Route::get('/{material_id}/questions/create',[QuestionController::class, 'create'])->name('questions.create');
-            Route::post('/{material_id}/questions/store',[QuestionController::class, 'store'])->name('questions.store');
+            Route::get('/{material}/questions',[QuestionController::class, 'index'])->name('questions.index');
+            Route::get('/{material}/questions/create',[QuestionController::class, 'create'])->name('questions.create');
+            Route::post('/{material}/questions/store',[QuestionController::class, 'store'])->name('questions.store');
         });
 
-        Route::get('/questions/{id}/edit',[QuestionController::class, 'edit'])->name('question.edit');
-        Route::put('/questions/{id}',[QuestionController::class, 'update'])->name('question.update');
-        Route::delete('/questions/{id}',[QuestionController::class, 'destroy'])->name('question.delete');
+        Route::get('/questions/{question}/edit',[QuestionController::class, 'edit'])->name('question.edit');
+        Route::put('/questions/{question}',[QuestionController::class, 'update'])->name('question.update');
+        Route::delete('/questions/{question}',[QuestionController::class, 'destroy'])->name('question.delete');
     });
 });
 

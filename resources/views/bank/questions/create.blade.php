@@ -2,7 +2,7 @@
 
 @section('content')
 <form method="POST"
-      action="{{ route('bank.material.questions.store', $material->id) }}"
+      action="{{ route('bank.material.questions.store', $material) }}"
       enctype="multipart/form-data"
       class="max-w-5xl mx-auto space-y-6">
 

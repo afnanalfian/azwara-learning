@@ -18,7 +18,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center gap-3">
 
         {{-- SEARCH --}}
-        <form method="GET" action="{{ route('bank.category.materials.index', $category->id) }}" class="flex w-full sm:w-auto gap-2">
+        <form method="GET" action="{{ route('bank.category.materials.index', $category) }}" class="flex w-full sm:w-auto gap-2">
             <input type="text"
                 name="q"
                 placeholder="Cari materi..."
@@ -35,7 +35,7 @@
 
         {{-- ADD BUTTON --}}
         @role('admin')
-        <a href="{{ route('bank.category.materials.create', $category->id) }}"
+        <a href="{{ route('bank.category.materials.create', $category) }}"
            class="px-4 py-2 bg-azwara-darker text-white rounded-xl hover:bg-azwara-medium transition">
             + Tambah Materi
         </a>
@@ -76,7 +76,7 @@
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 
                 {{-- LEFT: TITLE --}}
-                <a href="{{ route('bank.material.questions.index', $m->id) }}"
+                <a href="{{ route('bank.material.questions.index', $m) }}"
                 class="flex-1 block">
                     <h3 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 truncate">
                         {{ $m->name }}
@@ -98,7 +98,7 @@
                     @role('admin')
                     <div class="flex items-center gap-2">
 
-                        <a href="{{ route('bank.material.edit', $m->id) }}"
+                        <a href="{{ route('bank.material.edit', $m) }}"
                             class="px-3 py-1.5 rounded-lg text-[15px] font-medium
                                 bg-azwara-medium/10 text-azwara-darker dark:text-azwara-lighter
                                 hover:bg-azwara-medium/20 transition">
@@ -106,7 +106,7 @@
                         </a>
 
                         <form method="POST"
-                            action="{{ route('bank.material.delete', $m->id) }}"
+                            action="{{ route('bank.material.delete', $m) }}"
                             class="sweet-confirm"
                             data-message="Yakin ingin menghapus materi ini? Semua soal di dalamnya akan ikut terhapus secara permanen.">
                             @csrf

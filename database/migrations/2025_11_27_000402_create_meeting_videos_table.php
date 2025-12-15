@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->string('bunny_video_id');
             $table->string('playback_url');
             $table->string('library_id')->nullable();
-            $table->enum('status', ['uploading','ready','deleted'])->default('uploading');
+            $table->enum('status', ['uploading','ready','failed','deleted'])->default('uploading');
             $table->timestamps();
         });
     }

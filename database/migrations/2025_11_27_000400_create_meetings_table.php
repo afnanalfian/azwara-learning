@@ -13,7 +13,7 @@ class CreateMeetingsTable extends Migration
             $table->foreignId('course_id')->constrained()->cascadeOnDelete();
             $table->string('title');
             $table->string('slug')->nullable()->unique();
-            $table->dateTime('scheduled_at');
+            $table->dateTime('scheduled_at')->nullable();
             $table->timestamp('started_at')->nullable();
             $table->string('zoom_link')->nullable();
             $table->enum('status', ['upcoming','live','done','cancelled'])->default('upcoming');
