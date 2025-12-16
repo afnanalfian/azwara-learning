@@ -25,9 +25,8 @@
 
         <main class="flex-1 p-6 overflow-y-auto">
             @yield('content')
+            @include('layouts.partials.footer')
         </main>
-
-        @include('layouts.partials.footer')
     </div>
     @include('layouts.partials.toast')
     @stack('scripts')

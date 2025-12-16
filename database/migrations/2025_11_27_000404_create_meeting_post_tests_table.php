@@ -10,7 +10,7 @@ return new class extends Migration {
         Schema::create('meeting_post_tests', function (Blueprint $table) {
             $table->id();
             $table->foreignId('meeting_id')->constrained()->cascadeOnDelete();
-            $table->integer('duration_minutes');
+            $table->integer('duration_minutes')->nullable();
             $table->enum('status', ['inactive','active','closed'])->default('inactive');
             $table->timestamp('launched_at')->nullable();
             $table->timestamps();

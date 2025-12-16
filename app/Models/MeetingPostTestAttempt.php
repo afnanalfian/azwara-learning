@@ -53,4 +53,25 @@ class MeetingPostTestAttempt extends Model
     {
         return $this->is_submitted;
     }
+    public function getRemainingSecondsAttribute(): int
+    {
+        if (!$this->started_at) {
+            return 0;
+        }
+
+        if ($this->is_submitted) {
+            return 0;
+        }
+
+        $durationMinutes = $this->postTest?->duration_minutes;
+
+        if (!$durationMinutes) {
+            return 0;
+        }
+
+        $durationSeconds = $durationMinutes * 60;
+        $elapsedSeconds  = now()->diffInSeconds($this->started_at);
+
+        return max(0, $durationSeconds - $elapsedSeconds);
+    }
 }

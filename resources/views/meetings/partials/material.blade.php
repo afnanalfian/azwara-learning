@@ -6,7 +6,7 @@
     ======================= --}}
     @if(!$meeting->material)
 
-        <div class="text-sm text-gray-600 dark:text-gray-400">
+        <div class="text-sm text-gray-600 dark:text-gray-400 mt-3">
             Materi belum ditambahkan.
         </div>
 

@@ -4,9 +4,17 @@ import './theme';
 import './sidebar';
 import './toast';
 
-import Alpine from 'alpinejs';
-window.Alpine = Alpine;
-Alpine.start();
+import Alpine from 'alpinejs'
+import collapse from '@alpinejs/collapse'
+
+import postTestQuestionPicker from './components/posttest-question-picker'
+
+// expose ke global SEBELUM Alpine.start()
+window.Alpine = Alpine
+window.postTestQuestionPicker = postTestQuestionPicker
+
+Alpine.plugin(collapse)
+Alpine.start()
 
 import Swal from "sweetalert2";
 

@@ -59,6 +59,17 @@
             </span>
         </div>
 
+        {{-- QUESTION IMAGE --}}
+        @if ($q->image)
+            <div class="mb-4">
+                <img
+                    src="{{ asset('storage/' . $q->image) }}"
+                    alt="Gambar Soal"
+                    class="max-h-[320px] mx-auto rounded-xl shadow
+                        object-contain bg-white dark:bg-gray-800 p-2">
+            </div>
+        @endif
+
         {{-- QUESTION TEXT --}}
         <div class="prose dark:prose-invert max-w-none leading-relaxed mb-4 text-gray-800 dark:text-gray-100">
             {!! $q->question_text !!}
@@ -68,21 +79,40 @@
         @if (in_array($q->type, ['mcq', 'mcma']))
             <div class="space-y-3 mb-4">
 
-                @foreach ($q->options as $opt)
-                    <div class="border rounded-lg px-4 py-3
-                                flex items-center justify-between
-                                hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+            @foreach ($q->options as $opt)
+                <div class="border rounded-lg px-4 py-3
+                            flex items-start justify-between gap-3
+                            hover:bg-gray-50 dark:hover:bg-gray-700 transition">
 
-                        <div class="text-base text-gray-800 dark:text-gray-100">
-                            <strong>{{ $opt->label }}</strong>.
-                            {!! $opt->option_text !!}
+                    {{-- KONTEN OPSI --}}
+                    <div class="flex-1 text-gray-800 dark:text-gray-100 space-y-2">
+
+                        {{-- LABEL + TEKS (SATU BARIS) --}}
+                        <div class="flex items-start gap-2">
+                            <span class="font-semibold">
+                                {{ $opt->label }}.
+                            </span>
+
+                            <div class="prose dark:prose-invert max-w-none">
+                                {!! $opt->option_text !!}
+                            </div>
                         </div>
 
-                        @if ($opt->is_correct)
-                            <span class="text-green-600 font-bold text-sm">✔</span>
+                        {{-- GAMBAR (DI BAWAH TEKS) --}}
+                        @if ($opt->image)
+                            <img
+                                src="{{ asset('storage/' . $opt->image) }}"
+                                alt="Gambar Opsi"
+                                class="max-h-[200px] rounded-lg object-contain">
                         @endif
                     </div>
-                @endforeach
+
+                    {{-- INDIKATOR BENAR --}}
+                    @if ($opt->is_correct)
+                        <span class="text-green-600 font-bold text-sm mt-1">✔</span>
+                    @endif
+                </div>
+            @endforeach
 
             </div>
         @endif

@@ -40,20 +40,22 @@
                 </a>
             @endrole
 
-            @if($meeting->zoom_link)
-                <a href="{{ route('meeting.joinZoom', $meeting) }}"
-                   class="w-full sm:w-auto text-center
-                          px-4 py-2 rounded-lg text-sm font-medium
-                          bg-green-600 text-white hover:bg-green-700 transition">
-                    Join Zoom
-                </a>
-            @else
-                <button disabled
-                        class="w-full sm:w-auto
-                               px-4 py-2 rounded-lg text-sm font-medium
-                               bg-gray-400 text-white cursor-not-allowed">
-                    Belum Ada Link Zoom
-                </button>
+            @if($meeting->status !== 'done')
+                @if($meeting->zoom_link)
+                    <a href="{{ route('meeting.joinZoom', $meeting) }}"
+                    class="w-full sm:w-auto text-center
+                            px-4 py-2 rounded-lg text-sm font-medium
+                            bg-green-600 text-white hover:bg-green-700 transition">
+                        Join Zoom
+                    </a>
+                @else
+                    <button disabled
+                            class="w-full sm:w-auto
+                                px-4 py-2 rounded-lg text-sm font-medium
+                                bg-gray-400 text-white cursor-not-allowed">
+                        Belum Ada Link Zoom
+                    </button>
+                @endif
             @endif
 
             @role(['admin','tentor'])

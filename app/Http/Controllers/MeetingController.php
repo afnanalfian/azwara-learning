@@ -20,6 +20,7 @@ class MeetingController extends Controller
             'material',
             'video',
             'postTest.questions',
+            'postTest.attempts',
             'creator',
             'attendances' => function ($q) {
                 $q->whereHas('user.roles', function ($r) {
@@ -28,7 +29,21 @@ class MeetingController extends Controller
             },
         ]);
 
-        return view('meetings.show', compact('meeting'));
+        $attempt = null;
+
+        // hanya hitung attempt kalau user login + siswa + ada post test
+        if (
+            auth()->check() &&
+            auth()->user()->hasRole('siswa') &&
+            $meeting->postTest
+        ) {
+            $attempt = $meeting->postTest
+                ->attempts()
+                ->where('user_id', auth()->id())
+                ->first();
+        }
+
+        return view('meetings.show', compact('meeting', 'attempt'));
     }
 
     /**
@@ -157,11 +172,12 @@ class MeetingController extends Controller
         if (
             $meeting->material ||
             $meeting->video ||
-            $meeting->postTest
+            $meeting->postTest ||
+            $meeting->attendances
         ) {
             toast(
                 'error',
-                'Meeting tidak dapat dihapus karena masih memiliki materi, video, atau post test.'
+                'Meeting tidak dapat dihapus karena masih memiliki absensi, materi, video, atau post test.'
             );
 
             return back();

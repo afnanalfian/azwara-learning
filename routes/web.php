@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Models\QuestionCategory;
+use App\Models\QuestionMaterial;
 use App\Http\Controllers\Front\LandingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
@@ -30,6 +32,35 @@ Route::get('/', [LandingController::class, 'index'])->name('home');
 |--------------------------------------------------------------------------
 */
 require __DIR__.'/auth.php';
+Route::middleware(['auth', 'role:admin|tentor'])
+    ->get('/ajax/categories/{category}/materials', function ($category) {
+
+        $category = QuestionCategory::withTrashed()->findOrFail($category);
+
+        return response()->json(
+            $category->materials()
+                ->orderBy('name')
+                ->get(['id', 'name'])
+        );
+    })
+    ->name('ajax.categories.materials');
+Route::middleware(['auth', 'role:admin|tentor'])
+    ->get('/ajax/post-tests/{postTest}/questions/by-material/{material}',
+        function (
+            \Illuminate\Http\Request $request,
+            $postTest,
+            $material
+        ) {
+            $postTest = \App\Models\MeetingPostTest::findOrFail($postTest);
+
+            $material = QuestionMaterial::withTrashed()
+                ->findOrFail($material);
+
+            return app(MeetingPostTestController::class)
+                ->questionsByMaterial($request, $postTest, $material);
+        }
+    )
+    ->name('ajax.posttests.questions.byMaterial');
 
 /*
 |--------------------------------------------------------------------------
@@ -213,11 +244,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['role:admin|tentor'])->group(function () {
         Route::post('/meetings/{meeting}/post-test',[MeetingPostTestController::class, 'store'])->name('posttest.store');
         Route::get('/post-tests/{postTest}/edit',[MeetingPostTestController::class, 'edit'])->name('posttest.edit');
+        Route::post('/post-tests/{postTest}/duration',[MeetingPostTestController::class, 'updateDuration'])->name('posttest.duration.update');
         Route::post('/post-tests/{postTest}/questions',[MeetingPostTestController::class, 'attachQuestions'])->name('posttest.questions.attach');
         Route::post('/post-tests/{postTest}/launch',[MeetingPostTestController::class, 'launch'])->name('posttest.launch');
         Route::post('/post-tests/{postTest}/close',[MeetingPostTestController::class, 'close'])->name('posttest.close');
+        Route::get('/post-tests/{postTest}/questions/by-material/{material}',[MeetingPostTestController::class, 'questionsByMaterial'])->name('posttest.questions.byMaterial');
+        Route::delete('/post-tests/{postTest}/questions/{question}',[MeetingPostTestController::class, 'detachQuestion'])->name('posttest.questions.detach');
+        Route::get('/post-tests/{postTest}/result-admin',[MeetingPostTestController::class, 'resultAdmin'])->name('posttest.result.admin');
     });
-
     /*
     | SISWA (ATTEMPT)
     */

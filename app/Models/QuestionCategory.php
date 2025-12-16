@@ -24,4 +24,10 @@ class QuestionCategory extends Model
     {
         return $this->hasMany(QuestionMaterial::class, 'category_id');
     }
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->withTrashed()
+            ->where($field ?? $this->getRouteKeyName(), $value)
+            ->firstOrFail();
+    }
 }
