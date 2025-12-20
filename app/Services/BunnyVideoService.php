@@ -15,7 +15,7 @@ class BunnyVideoService
             'AccessKey' => config('services.bunny.api_key'),
         ])->attach(
             'file',
-            fopen($file->getRealPath(), 'r'),
+            file_get_contents($file->getRealPath()),
             $file->getClientOriginalName()
         )->post(
             "https://video.bunnycdn.com/library/{$libraryId}/videos",
