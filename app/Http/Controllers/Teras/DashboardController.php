@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Front;
+namespace App\Http\Controllers\Teras;
 
 use App\Http\Controllers\Controller;
 

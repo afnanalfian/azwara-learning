@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Controllers\Front\{
+use App\Http\Controllers\Teras\{
     LandingController,
     DashboardController
 };
