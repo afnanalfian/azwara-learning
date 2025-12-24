@@ -1175,6 +1175,7 @@ class BimbelAfnanSeeder extends Seeder
             UserEntitlement::create([
                 'user_id' => $student->id,
                 'entitlement_type' => $entitlementType,
+                'entitlement_id' => $entitlementId,
                 'source' => 'purchase',
                 'expires_at' => $date->copy()->addYear(),
                 'created_at' => $date,
