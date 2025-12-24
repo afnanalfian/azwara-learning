@@ -28,7 +28,7 @@ use App\Http\Controllers\Exam\{
     ExamQuestionController,
     ExamAttemptController,
     ExamResultController,
-    LeaderBoardController
+    LeaderboardController
 };
 
 use App\Http\Controllers\Question\{
