@@ -679,7 +679,7 @@ class BimbelAfnanSeeder extends Seeder
             'exam_date' => now()->addDays(7)->setTime(9, 0),
             'duration_minutes' => 90,
             'status' => 'active',
-            'created_by' => User::where('email', 'admin@bimbelafnan.com')->first()->id,
+            'created_by' => User::where('email', 'admin@bimbel.com')->first()->id,
         ]);
 
         // 2. Buat Tryout IPA
@@ -689,7 +689,7 @@ class BimbelAfnanSeeder extends Seeder
             'exam_date' => now()->addDays(8)->setTime(9, 0),
             'duration_minutes' => 90,
             'status' => 'active',
-            'created_by' => User::where('email', 'admin@bimbelafnan.com')->first()->id,
+            'created_by' => User::where('email', 'admin@bimbel.com')->first()->id,
         ]);
 
         // 3. Buat Quiz Harian
@@ -699,7 +699,7 @@ class BimbelAfnanSeeder extends Seeder
             'exam_date' => now(),
             'duration_minutes' => 30,
             'status' => 'active',
-            'created_by' => User::where('email', 'admin@bimbelafnan.com')->first()->id,
+            'created_by' => User::where('email', 'admin@bimbel.com')->first()->id,
         ]);
 
         // Ambil 5 soal random dari semua soal
@@ -1112,7 +1112,7 @@ class BimbelAfnanSeeder extends Seeder
             'proof_image' => null,
             'paid_at' => $date->copy()->addHours(1),
             'verified_at' => $date->copy()->addHours(2),
-            'verified_by' => User::where('email', 'admin@bimbelafnan.com')->first()->id,
+            'verified_by' => User::where('email', 'admin@bimbel.com')->first()->id,
             'status' => 'verified',
             'created_at' => $date,
             'updated_at' => $date,
