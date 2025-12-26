@@ -12,6 +12,7 @@ class ExamPolicy
         if (! $user->hasRole('siswa')) {
             return true;
         }
+
         return match ($exam->type) {
 
             // Tryout → global
@@ -20,7 +21,28 @@ class ExamPolicy
             // Quiz harian → global
             'quiz'   => $user->hasQuizAccess(),
 
-            default  => false,
+            // Post-test → ikut akses meeting
+            'post_test' => $this->canAccessPostTest($user, $exam),
+
+            default => false,
         };
     }
+
+    protected function canAccessPostTest(User $user, Exam $exam): bool
+    {
+        if (! $exam->owner || ! $exam->owner instanceof Meeting) {
+            return false;
+        }
+
+        $meeting = $exam->owner;
+
+        // 1. Jika beli course
+        if ($meeting->course_id && $user->hasCourse($meeting->course_id)) {
+            return true;
+        }
+
+        // 2. Jika beli meeting satuan
+        return $user->hasEntitlement('meeting', $meeting->id);
+    }
 }
+
