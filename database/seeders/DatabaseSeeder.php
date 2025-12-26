@@ -20,12 +20,12 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        $this->call(BimbelAfnanSeeder::class);
-        // $this->call(ProvinceSeeder::class);
-        // $this->call(RegencySeeder::class);
-        // $this->call(RoleSeeder::class);
-        // $this->call(AdminUserSeeder::class);
-        // $this->call(SiswaUserSeeder::class);
+        // $this->call(BimbelAfnanSeeder::class);
+        $this->call(ProvinceSeeder::class);
+        $this->call(RegencySeeder::class);
+        $this->call(RoleSeeder::class);
+        $this->call(AdminUserSeeder::class);
+        $this->call(SiswaUserSeeder::class);
         // $this->call(CourseSeeder::class);
         // $this->call(QuestionSeeder::class);
         // $this->call(ProductSeeder::class);

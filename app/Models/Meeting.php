@@ -49,8 +49,44 @@ class Meeting extends Model
     {
         return $this->hasOne(MeetingVideo::class);
     }
+    // Untuk observer dan productable access
+    public function productable()
+    {
+        return $this->morphOne(Productable::class, 'productable');
+    }
     public function product()
     {
         return $this->morphOne(Productable::class, 'productable')->with('product');
+    }
+    // Untuk query langsung ke product
+    public function productRelation()
+    {
+        return $this->hasOneThrough(
+            Product::class,
+            Productable::class,
+            'productable_id',
+            'id',
+            'id',
+            'product_id'
+        )->where('productable_type', static::class);
+    }
+
+    /**
+     * Accessor untuk mendapatkan Product langsung
+     * Bisa melalui productRelation atau productable
+     */
+    public function getProductAttribute()
+    {
+        // Coba via productRelation dulu
+        if ($this->relationLoaded('productRelation')) {
+            return $this->productRelation;
+        }
+
+        // Fallback via productable
+        if (!$this->relationLoaded('productable')) {
+            $this->load('productable.product');
+        }
+
+        return $this->productable?->product;
     }
 }

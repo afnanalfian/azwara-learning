@@ -145,4 +145,17 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasEntitlement('quiz');
     }
+
+    protected function usersWithMeetingAccess(Meeting $meeting)
+    {
+        return User::whereHas('entitlements', function ($q) use ($meeting) {
+            $q->where(function ($q2) use ($meeting) {
+                $q2->where('entitlement_type', 'meeting')
+                ->where('entitlement_id', $meeting->id);
+            })->orWhere(function ($q2) use ($meeting) {
+                $q2->where('entitlement_type', 'course')
+                ->where('entitlement_id', $meeting->course_id);
+            });
+        })->get();
+    }
 }

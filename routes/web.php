@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
+use App\Models\User;
 use App\Http\Controllers\Teras\{
     LandingController,
     DashboardController
@@ -20,7 +20,8 @@ use App\Http\Controllers\Course\{
     MeetingController,
     MeetingMaterialController,
     MeetingAttendanceController,
-    MeetingVideoController
+    MeetingVideoController,
+    ScheduleController
 };
 
 use App\Http\Controllers\Exam\{
@@ -453,5 +454,30 @@ Route::middleware(['auth', 'verified'])->group(function () {
     */
     Route::get('/game/math', function () {return view('games.math');})->name('game.math');
     Route::get('/game/snake', function () {return view('games.snake');})->name('game.snake');
+
+    /*
+    |--------------------------------------------------------------------------
+    | SCHEDULE ROUTES
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule.index');
+
 });
 
+Route::get('/test-notif-admin', function () {
+
+    $admin = User::role('admin')->first();
+
+    if (! $admin) {
+        return 'Admin tidak ditemukan';
+    }
+
+    notify_user(
+        $admin,
+        'TEST NOTIFIKASI: Ini notifikasi percobaan ke admin',
+        false,
+        '/dashboard'
+    );
+
+    return 'Notif dikirim ke admin: ' . $admin->email;
+});

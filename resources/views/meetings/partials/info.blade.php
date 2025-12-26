@@ -31,7 +31,7 @@
 
         {{-- ACTIONS (ADMIN ONLY) --}}
         <div class="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
-            @role(['admin','tentor'])
+            @role('admin')
                 <a href="{{ route('meeting.edit', $meeting) }}"
                 class="w-full sm:w-auto text-center
                         px-4 py-2 rounded-lg text-sm font-medium
@@ -60,7 +60,7 @@
                 @endif
             @endif
 
-            @role(['admin','tentor'])
+            @role('admin')
             <form method="POST"
                   action="{{ route('meeting.destroy', $meeting) }}"
                   class="sweet-confirm w-full sm:w-auto"

@@ -65,4 +65,28 @@ class Product extends Model
             'max' => $max ?? 0,
         ];
     }
+    /**
+     * Get the actual model (Meeting, Exam, Course) through productable
+     */
+    public function getActualModelAttribute()
+    {
+        if (!$this->productable) {
+            return null;
+        }
+
+        return $this->productable->productable;
+    }
+
+    /**
+     * Get course ID if this is a meeting
+     */
+    public function getCourseIdAttribute()
+    {
+        if ($this->type !== 'meeting') {
+            return null;
+        }
+
+        $meeting = $this->getActualModelAttribute();
+        return $meeting?->course_id ?? null;
+    }
 }

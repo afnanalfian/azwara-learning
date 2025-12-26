@@ -7,6 +7,7 @@ use App\Models\Exam;
 use App\Models\Meeting;
 use App\Models\QuestionCategory;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class ExamController extends Controller
 {
@@ -147,7 +148,28 @@ class ExamController extends Controller
     public function activate(Exam $exam)
     {
         $exam->update(['status' => 'active']);
+        /** TARGET USERS */
+        $users = collect();
 
+        if (in_array($exam->type, ['tryout', 'quiz'])) {
+            $users = User::whereHas('entitlements', function ($q) use ($exam) {
+                $q->where('entitlement_type', $exam->type);
+            })->get();
+        }
+
+        if ($exam->type === 'post_test' && $exam->owner_type === Meeting::class) {
+            $meeting = Meeting::find($exam->owner_id);
+            $users   = $this->usersWithMeetingAccess($meeting);
+        }
+
+        foreach ($users as $user) {
+            notify_user(
+                $user,
+                "Ujian '{$exam->title}' telah dibuka. Silakan dikerjakan.",
+                false,
+                route('exams.show', $exam)
+            );
+        }
         return back()->with('success', 'Ujian diaktifkan');
     }
 

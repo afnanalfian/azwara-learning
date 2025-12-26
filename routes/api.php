@@ -3,9 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Models\Regency;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
-use App\Http\Controllers\BunnyWebhookController;
 
-Route::post('/webhooks/bunny', [BunnyWebhookController::class, 'handle']);
+
 Route::get('/regencies/{province_id}', function ($province_id) {
     return response()->json(
         Regency::where('province_id', $province_id)

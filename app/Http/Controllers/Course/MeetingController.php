@@ -163,7 +163,15 @@ class MeetingController extends Controller
         $meeting->update([
             'status' => 'done',
         ]);
-
+        /** NOTIFY TEACHERS */
+        foreach ($meeting->course->teachers as $teacher) {
+            notify_user(
+                $teacher->user,
+                "Meeting '{$meeting->title}' telah selesai. Harap upload materi dan video.",
+                false,
+                route('meeting.show', $meeting)
+            );
+        }
         toast('success', 'Meeting selesai');
         return back();
     }

@@ -43,6 +43,19 @@ class MeetingVideoController extends Controller
             'title'             => $meeting->title,
             'youtube_video_id'  => $request->youtube_video_id,
         ]);
+
+        /** NOTIFY STUDENTS WITH ACCESS */
+        $users = $this->usersWithMeetingAccess($meeting);
+
+        foreach ($users as $user) {
+            notify_user(
+                $user,
+                "Video rekaman meeting '{$meeting->title}' sudah tersedia.",
+                false,
+                route('meeting.show', $meeting)
+            );
+        }
+
         toast('success', 'Video berhasil ditambahkan');
         return redirect()->route('meeting.show', $meeting);
     }

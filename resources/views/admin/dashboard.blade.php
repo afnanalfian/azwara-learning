@@ -16,7 +16,7 @@
 
         <div class="flex items-center gap-2">
             <a href="?week={{ $weekOffset - 1 }}"
-               class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600
+               class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:text-azwara-lightest
                       hover:bg-gray-50 dark:hover:bg-gray-800 transition">
                 ← Prev
             </a>
@@ -25,7 +25,7 @@
                 {{ $weekLabel }}
             </span>
             <a href="?week={{ $weekOffset + 1 }}"
-               class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600
+               class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:text-azwara-lightest
                       hover:bg-gray-50 dark:hover:bg-gray-800 transition">
                 Next →
             </a>

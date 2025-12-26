@@ -8,6 +8,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
 
 use App\Observers\OrderObserver;
+use App\Observers\ProductAutoCreateObserver;
 use App\Models\Order;
 use Carbon\Carbon;
 
@@ -44,6 +45,9 @@ class AppServiceProvider extends ServiceProvider
         // OBSERVER
         // ===============================
         Order::observe(OrderObserver::class);
+        Meeting::observe(ProductAutoCreateObserver::class);
+        Course::observe(ProductAutoCreateObserver::class);
+        Exam::observe(ProductAutoCreateObserver::class);
 
         // ===============================
         // POLICY REGISTRATION (Laravel 11)

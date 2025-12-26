@@ -12,6 +12,13 @@
         width: 0%;
     }
 }
+
+@supports (-webkit-touch-callout: none) {
+  .min-h-screen {
+    min-height: -webkit-fill-available;
+  }
+}
+
 .dark .toast {
     box-shadow: 0 10px 30px rgba(0,0,0,.4);
 }

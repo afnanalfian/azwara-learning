@@ -21,4 +21,21 @@ class Productable extends Model
     {
         return $this->morphTo();
     }
+    // Untuk meeting
+    public function meeting()
+    {
+        return $this->morphOne(Meeting::class, 'productable');
+    }
+
+    // Untuk exam
+    public function exam()
+    {
+        return $this->morphOne(Exam::class, 'productable');
+    }
+
+    // Untuk course
+    public function course()
+    {
+        return $this->morphOne(Course::class, 'productable');
+    }
 }

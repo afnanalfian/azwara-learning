@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
+use App\Models\Productable;
 use App\Models\Meeting;
 use App\Models\UserEntitlement;
 use App\Services\PricingService;
@@ -43,7 +44,7 @@ class CartController extends Controller
     }
 
     /**
-     * Add product ke cart
+     * Add product ke cart - FIXED VERSION
      */
     public function add(
         Request $request,
@@ -64,7 +65,6 @@ class CartController extends Controller
 
         /**
          * 1. BLOK TRYOUT JIKA SUDAH ADA COURSE PACKAGE
-         *    (karena tryout GLOBAL)
          */
         if (
             $product->type === 'tryout' &&
@@ -80,49 +80,26 @@ class CartController extends Controller
         }
 
         /**
-         * 2. BLOK MEETING JIKA COURSE YANG SAMA SUDAH ADA
+         * 2. BLOK MEETING JIKA COURSE YANG SAMA SUDAH ADA COURSE PACKAGE
          */
         if ($product->type === 'meeting') {
-
-            $meeting = $product->productable?->productable; // Meeting model
+            // Dapatkan meeting dari product
+            $productable = $product->productable;
+            $meeting = $productable?->productable;
             $courseId = $meeting?->course_id;
 
             if ($courseId) {
-                $hasSameCourse = $cart->items()
-                    ->whereHas('product', function ($q) use ($courseId) {
-                        $q->where('type', 'course_package')
-                        ->whereHas('productable.productable', fn ($qq) =>
-                            $qq->where('id', $courseId)
-                        );
-                    })
-                    ->exists();
+                // Cari semua meeting di course ini melalui Meeting model
+                $meetingIds = Meeting::where('course_id', $courseId)
+                    ->pluck('id')
+                    ->toArray();
 
-                if ($hasSameCourse) {
-                    return response()->json([
-                        'message' => 'Meeting sudah termasuk dalam Full Course'
-                    ], 422);
-                }
-            }
-        }
-
-        DB::transaction(function () use ($request, $product, $cart, $pricingService) {
-
-            /**
-             * 3. JIKA TAMBAH COURSE PACKAGE
-             */
-            if ($product->type === 'course_package') {
-
-                $course = $product->productable?->productable; // Course model
-
-                /**
-                 * A. HAPUS MEETING COURSE INI SAJA
-                 */
-                if ($course) {
-                    $meetingProductIds = Meeting::where('course_id', $course->id)
-                        ->whereHas('product')
-                        ->get()
-                        ->pluck('product.product.id')
-                        ->filter()
+                if (!empty($meetingIds)) {
+                    // Cari product_id dari meeting-meeting tersebut
+                    $meetingProductIds = Productable::where('productable_type', Meeting::class)
+                        ->whereIn('productable_id', $meetingIds)
+                        ->pluck('product_id')
+                        ->unique()
                         ->toArray();
 
                     if (!empty($meetingProductIds)) {
@@ -131,72 +108,129 @@ class CartController extends Controller
                             ->delete();
                     }
                 }
+            }
+        }
 
-                /**
-                 * B. HAPUS SEMUA TRYOUT (GLOBAL)
-                 */
-                $tryoutProductIds = Product::where('type', 'tryout')
-                    ->pluck('id')
-                    ->toArray();
+        /**
+         * 3. HITUNG QTY
+         */
+        $qty = (int) $request->input('qty', 1);
 
-                if (!empty($tryoutProductIds)) {
-                    $cart->items()
-                        ->whereIn('product_id', $tryoutProductIds)
-                        ->delete();
+        /**
+         * 4. PRICING HARUS LOLOS SEBELUM TRANSACTION
+         */
+        try {
+            if ($product->type === 'meeting') {
+                // Tidak dihitung di sini, nanti repricing per-course
+                $unitPrice = null;
+            } else {
+                $priceable = $pricingService->getPriceableForProduct($product);
+
+                $unitPrice = $pricingService->determineUnitPrice(
+                    $product->type,
+                    $qty,
+                    $priceable
+                );
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 422);
+        }
+
+        /**
+         * 5. TRANSACTION
+         */
+        DB::transaction(function () use (
+            $product,
+            $cart,
+            $qty,
+            $unitPrice,
+            $pricingService
+        ) {
+            /**
+             * A. JIKA TAMBAH COURSE PACKAGE
+             */
+            if ($product->type === 'course_package') {
+                // Dapatkan course dari product
+                $productable = $product->productable;
+                $course = $productable?->productable;
+
+                // HAPUS MEETING COURSE INI
+                if ($course) {
+                    // Cari semua meeting di course ini
+                    $meetingIds = Meeting::where('course_id', $course->id)
+                        ->pluck('id')
+                        ->toArray();
+
+                    if (!empty($meetingIds)) {
+                        // Cari product_id dari meeting-meeting tersebut
+                        $meetingProductIds = Productable::where('productable_type', Meeting::class)
+                            ->whereIn('productable_id', $meetingIds)
+                            ->pluck('product_id')
+                            ->unique()
+                            ->toArray();
+
+                        if (!empty($meetingProductIds)) {
+                            $cart->items()
+                                ->whereIn('product_id', $meetingProductIds)
+                                ->delete();
+                        }
+                    }
                 }
-                /**
-                 * C. HAPUS ADDON QUIZ (karena course sudah include quiz)
-                 */
-                $addonQuizIds = Product::where('type', 'addon')->pluck('id')->toArray();
 
-                if (! empty($addonQuizIds)) {
-                    $cart->items()
-                        ->whereIn('product_id', $addonQuizIds)
-                        ->delete();
-                }
+                // HAPUS TRYOUT
+                $cart->items()
+                    ->whereHas('product', fn ($q) =>
+                        $q->where('type', 'tryout')
+                    )
+                    ->delete();
+
+                // HAPUS ADDON
+                $cart->items()
+                    ->whereHas('product', fn ($q) =>
+                        $q->where('type', 'addon')
+                    )
+                    ->delete();
             }
 
             /**
-             * 4. INSERT / UPDATE ITEM
+             * B. INSERT / UPDATE ITEM
              */
-            $qty = (int) $request->input('qty', 1);
-
-            CartItem::updateOrCreate(
+            $cartItem = CartItem::updateOrCreate(
                 [
                     'cart_id'    => $cart->id,
                     'product_id' => $product->id,
                 ],
                 [
                     'qty'            => $qty,
-                    'price_snapshot' => 0,
+                    'price_snapshot' => $unitPrice ?? 0,
                 ]
             );
 
             /**
-             * 5. REPRICE
+             * C. REPRICE MEETING PER COURSE
              */
             if ($product->type === 'meeting') {
+                $prices = $pricingService->meetingUnitPricesPerCourse($cart);
 
-                $unitPrice = $pricingService->meetingUnitPriceFromCart($cart);
+                // Update harga semua meeting di cart
+                $cart->load('items.product.productable.productable');
 
-                $cart->items()
-                    ->whereHas('product', fn ($q) => $q->where('type', 'meeting'))
-                    ->update([
-                        'price_snapshot' => $unitPrice,
-                    ]);
+                foreach ($cart->items as $item) {
+                    if ($item->product->type !== 'meeting') {
+                        continue;
+                    }
 
-            } else {
+                    $meeting = $item->product->productable?->productable;
+                    $courseId = $meeting?->course_id ?? 0;
 
-                $unitPrice = $pricingService->determineUnitPrice(
-                    $product->type,
-                    $qty
-                );
-
-                $cart->items()
-                    ->where('product_id', $product->id)
-                    ->update([
-                        'price_snapshot' => $unitPrice,
-                    ]);
+                    if ($courseId && isset($prices[$courseId])) {
+                        $item->update([
+                            'price_snapshot' => $prices[$courseId],
+                        ]);
+                    }
+                }
             }
         });
 
@@ -218,28 +252,34 @@ class CartController extends Controller
 
         DB::transaction(function () use ($cartItem, $qty, $pricingService) {
 
-            $cartItem->update([
-                'qty' => $qty,
-            ]);
+            $cartItem->update(['qty' => $qty]);
 
             $cart = $cartItem->cart;
 
-            // MEETING → collective pricing
             if ($cartItem->product->type === 'meeting') {
 
-                $unitPrice = $pricingService->meetingUnitPriceFromCart($cart);
+                $prices = $pricingService->meetingUnitPricesPerCourse($cart);
 
-                $cart->items()
-                    ->whereHas('product', fn ($q) => $q->where('type', 'meeting'))
-                    ->update([
-                        'price_snapshot' => $unitPrice,
+                $cart->load('items.product.productable');
+
+                foreach ($cart->items as $item) {
+                    if ($item->product->type !== 'meeting') {
+                        continue;
+                    }
+
+                    $courseId = $item->product->productable->course_id;
+
+                    $item->update([
+                        'price_snapshot' => $prices[$courseId] ?? 0,
                     ]);
+                }
 
             } else {
 
                 $unitPrice = $pricingService->determineUnitPrice(
                     $cartItem->product->type,
-                    $qty
+                    $qty,
+                    $cartItem->product->productable
                 );
 
                 $cartItem->update([
@@ -350,7 +390,7 @@ class CartController extends Controller
         $cart->load('items.product');
 
         /**
-         * 1️⃣ User sudah punya akses quiz
+         *  User sudah punya akses quiz
          */
         if ($this->userHasQuiz($user->id)) {
             return back()->withErrors([
@@ -359,7 +399,7 @@ class CartController extends Controller
         }
 
         /**
-         * 2️⃣ Cart memiliki course package → addon tidak boleh
+         *  Cart memiliki course package → addon tidak boleh
          */
         if ($cart->items->contains(
             fn ($item) => $item->product->type === 'course_package'
@@ -370,7 +410,7 @@ class CartController extends Controller
         }
 
         /**
-         * 3️⃣ Addon quiz sudah ada di cart
+         *  Addon quiz sudah ada di cart
          */
         if ($cart->items->contains(
             fn ($item) => $item->product->type === 'addon'
@@ -381,7 +421,7 @@ class CartController extends Controller
         }
 
         /**
-         * 4️⃣ Ambil product addon
+         * Ambil product addon
          */
         $addonProduct = Product::where('type', 'addon')->first();
 
@@ -390,12 +430,12 @@ class CartController extends Controller
         }
 
         /**
-         * 5️⃣ Ambil harga dari PricingService (SATU-SATUNYA sumber harga)
+         * Ambil harga dari PricingService (SATU-SATUNYA sumber harga)
          */
         $price = $pricingService->addonPrice();
 
         /**
-         * 6️⃣ Simpan ke cart (qty = 1, harga FIX)
+         * Simpan ke cart (qty = 1, harga FIX)
          */
         DB::transaction(function () use ($cart, $addonProduct, $price) {
 
@@ -405,8 +445,8 @@ class CartController extends Controller
                 'price_snapshot' => $price,
             ]);
         });
-
-        return back()->with('success', 'Addon Quiz berhasil ditambahkan.');
+        toast('success', 'Addon Quiz berhasil ditambahkan.');
+        return back();
     }
 
 

@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\Exam;
+use App\Models\Meeting;
 
 class ExamPolicy
 {
@@ -30,18 +31,56 @@ class ExamPolicy
 
     protected function canAccessPostTest(User $user, Exam $exam): bool
     {
-        if (! $exam->owner || ! $exam->owner instanceof Meeting) {
+        // Safety: hanya berlaku untuk post_test
+        if ($exam->type !== 'post_test') {
             return false;
         }
 
-        $meeting = $exam->owner;
+        /**
+         * ======================================
+         * 1. Resolve meeting dari exam owner
+         * ======================================
+         */
+        $meeting = null;
 
-        // 1. Jika beli course
-        if ($meeting->course_id && $user->hasCourse($meeting->course_id)) {
+        // Normal case (morphTo bekerja)
+        if ($exam->relationLoaded('owner')) {
+            $meeting = $exam->owner;
+        } else {
+            try {
+                $meeting = $exam->owner;
+            } catch (\Throwable $e) {
+                $meeting = null;
+            }
+        }
+
+        // Fallback: owner_id ada tapi morph gagal
+        if (! $meeting && $exam->owner_id) {
+            $meeting = Meeting::find($exam->owner_id);
+        }
+
+        // Tetap bukan meeting → tolak
+        if (! $meeting instanceof Meeting) {
+            return false;
+        }
+
+        /**
+         * ======================================
+         * 2. COURSE PACKAGE → AKSES SEMUA
+         * ======================================
+         */
+        if (
+            $meeting->course_id &&
+            $user->hasCourse($meeting->course_id)
+        ) {
             return true;
         }
 
-        // 2. Jika beli meeting satuan
+        /**
+         * ======================================
+         * 3. MEETING SATUAN
+         * ======================================
+         */
         return $user->hasEntitlement('meeting', $meeting->id);
     }
 }

@@ -42,7 +42,18 @@
                             {{ strtoupper($rule->pricing_type) }}
                         </p>
                     </div>
-
+                    @if ($rule->priceable)
+                        <span class="text-xs px-2 py-1 rounded-md
+                            bg-indigo-100 text-indigo-700">
+                            {{ class_basename($rule->priceable_type) }}:
+                            {{ $rule->priceable->name ?? $rule->priceable->title ?? '—' }}
+                        </span>
+                    @else
+                        <span class="text-xs px-2 py-1 rounded-md
+                            bg-gray-100 text-gray-600">
+                            GLOBAL
+                        </span>
+                    @endif
                     <span class="inline-flex px-3 py-1 rounded-lg text-xs font-semibold
                         {{ $rule->is_active
                             ? 'bg-green-100 text-green-700'
@@ -50,7 +61,6 @@
                         {{ $rule->is_active ? 'AKTIF' : 'NONAKTIF' }}
                     </span>
                 </div>
-
                 <div class="grid grid-cols-2 gap-3 text-sm text-gray-700 dark:text-gray-300">
                     <div>
                         <p class="text-xs text-gray-500">Range Qty</p>
@@ -106,6 +116,7 @@
                 <tr class="text-left text-azwara-lightest dark:text-gray-300">
                     <th class="px-6 py-4">Produk</th>
                     <th class="px-6 py-4">Tipe</th>
+                    <th class="px-6 py-4">Scope</th>
                     <th class="px-6 py-4">Range Qty</th>
                     <th class="px-6 py-4">Harga</th>
                     <th class="px-6 py-4">Status</th>
@@ -124,7 +135,20 @@
                         <td class="px-6 py-4 dark:text-white">
                             {{ strtoupper($rule->pricing_type) }}
                         </td>
-
+                        <td class="px-6 py-4 text-sm">
+                            @if ($rule->priceable)
+                                <span class="inline-flex px-2 py-1 rounded-md text-xs
+                                    bg-indigo-100 text-indigo-700">
+                                    {{ class_basename($rule->priceable_type) }}:
+                                    {{ $rule->priceable->name ?? $rule->priceable->title ?? '—' }}
+                                </span>
+                            @else
+                                <span class="inline-flex px-2 py-1 rounded-md text-xs
+                                    bg-gray-100 text-gray-600">
+                                    GLOBAL
+                                </span>
+                            @endif
+                        </td>
                         <td class="px-6 py-4 dark:text-white">
                             {{ $rule->min_qty }} – {{ $rule->max_qty ?? '∞' }}
                         </td>

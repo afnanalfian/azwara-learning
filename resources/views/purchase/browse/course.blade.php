@@ -59,12 +59,12 @@
 
         <p class="font-semibold text-primary dark:text-azwara-lighter">
             Harga Full Course:
-            Rp {{ number_format(price_for_course_package(), 0, ',', '.') }}
+            Rp {{ number_format(price_for_course_package($course), 0, ',', '.') }}
         </p>
 
-        @if ($course->product)
+        @if ($course->coursePackage)
             @php
-                $productId = $course->product->product->id;
+                $productId = $course->coursePackage->product->id;
                 $inCart    = in_array($productId, $cartProductIds);
                 $owned     = auth()->user()?->hasCourse($course->id);
             @endphp
@@ -105,66 +105,67 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
-            @forelse ($meetings as $m)
-                <div class="rounded-2xl border
-                            border-gray-200 dark:border-azwara-darker
-                            bg-white dark:bg-azwara-darkest p-6">
+        @forelse ($meetings as $m)
+            <div class="rounded-2xl border
+                        border-gray-200 dark:border-azwara-darker
+                        bg-white dark:bg-azwara-darkest p-6">
 
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                        {{ $m->title }}
-                    </h3>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                    {{ $m->title }}
+                </h3>
 
-                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                        {{ $m->scheduled_at->format('d M Y, H:i') }}
-                    </p>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                    {{ $m->scheduled_at->format('d M Y, H:i') }}
+                </p>
 
+                @php
+                    $range = price_range_meeting($course);
+                @endphp
+
+                <p class="font-semibold text-primary text-sm">
+                    Rp {{ number_format($range['min'], 0, ',', '.') }}
+                    –
+                    Rp {{ number_format($range['max'], 0, ',', '.') }}
+                </p>
+
+                {{-- GUNAKAN $m->product (accessor) --}}
+                @if ($m->product)
                     @php
-                        $range = price_range_meeting();
+                        // $m->product sudah mengembalikan Product model
+                        $productId = $m->product->id; // LANGSUNG .id
+                        $inCart    = in_array($productId, $cartProductIds);
+                        $locked    = in_array($m->course_id, $courseIdsInCart);
                     @endphp
 
-                    <p class="font-semibold text-primary text-sm">
-                        Rp {{ number_format($range['min'], 0, ',', '.') }}
-                        –
-                        Rp {{ number_format($range['max'], 0, ',', '.') }}
-                    </p>
+                    @if ($locked)
+                        <button disabled
+                                class="mt-5 w-full py-3 rounded-xl
+                                    bg-gray-300 text-gray-600 cursor-not-allowed">
+                            Termasuk Full Course
+                        </button>
 
-                    @if ($m->product)
-                        @php
-                            $productId = $m->product->product->id;
-                            $inCart    = in_array($productId, $cartProductIds);
-                            $locked    = in_array($m->course_id, $courseIdsInCart);
-                        @endphp
+                    @elseif ($inCart)
+                        <button disabled
+                                class="mt-5 w-full py-3 rounded-xl
+                                    bg-gray-400 text-white cursor-not-allowed">
+                            Sudah di Keranjang
+                        </button>
 
-                        @if ($locked)
-                            <button disabled
-                                    class="mt-5 w-full py-3 rounded-xl
-                                           bg-gray-300 text-gray-600 cursor-not-allowed">
-                                Termasuk Full Course
-                            </button>
-
-                        @elseif ($inCart)
-                            <button disabled
-                                    class="mt-5 w-full py-3 rounded-xl
-                                           bg-gray-400 text-white cursor-not-allowed">
-                                Sudah di Keranjang
-                            </button>
-
-                        @else
-                            <button type="button"
-                                    data-product-id="{{ $productId }}"
-                                    class="add-to-cart-btn mt-5 w-full py-3 rounded-xl
-                                           bg-primary text-white">
-                                Tambah ke Keranjang
-                            </button>
-                        @endif
+                    @else
+                        <button type="button"
+                                data-product-id="{{ $productId }}"
+                                class="add-to-cart-btn mt-5 w-full py-3 rounded-xl
+                                    bg-primary text-white">
+                            Tambah ke Keranjang
+                        </button>
                     @endif
-                </div>
-
-            @empty
-                <p class="text-gray-600 dark:text-gray-400">
-                    Belum ada pertemuan.
-                </p>
-            @endforelse
+                @endif
+            </div>
+        @empty
+            <p class="text-gray-600 dark:text-gray-400">
+                Belum ada pertemuan.
+            </p>
+        @endforelse
         </div>
     </div>
 </div>

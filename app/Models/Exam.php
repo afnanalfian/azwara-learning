@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Exam extends Model
 {
     use SoftDeletes, HasFactory;
+
     protected $fillable = [
         'type',
         'title',
@@ -49,12 +50,34 @@ class Exam extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
-    public function product()
+
+    /**
+     * Relasi ke Productable
+     * Nama diubah dari product() menjadi productable()
+     */
+    public function productable()
     {
         return $this->morphOne(Productable::class, 'productable')->with('product');
     }
 
     /* ================= HELPERS ================= */
+
+    /**
+     * Accessor untuk mendapatkan Product langsung
+     * Tetap menggunakan nama product
+     */
+    public function getProductAttribute()
+    {
+        // Cek apakah relasi productable sudah dimuat
+        if (!$this->relationLoaded('productable')) {
+            $this->load('productable');
+        }
+
+        // Kembalikan product dari productable
+        return $this->productable?->product;
+    }
+
+    /* ================= METHODS ================= */
 
     public function isPostTest(): bool
     {
@@ -75,6 +98,7 @@ class Exam extends Model
     {
         return $this->status === 'active';
     }
+
     public function hasTimeWindow(): bool
     {
         if (!$this->scheduled_at) return true;
@@ -84,6 +108,7 @@ class Exam extends Model
             $this->scheduled_end_at ?? now()->addYears(10)
         );
     }
+
     public function getContextTitleAttribute(): string
     {
         // POST TEST (melekat ke meeting)
@@ -126,5 +151,4 @@ class Exam extends Model
         // ================= FALLBACK =================
         return route('dashboard.redirect');
     }
-
 }

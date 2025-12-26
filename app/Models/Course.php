@@ -34,4 +34,12 @@ class Course extends Model
     {
         return $this->morphOne(Productable::class, 'productable')->with('product');
     }
+    public function coursePackage()
+    {
+        return $this->morphOne(Productable::class, 'productable')
+            ->whereHas('product', fn ($q) =>
+                $q->where('type', 'course_package')
+            )
+            ->with('product');
+    }
 }

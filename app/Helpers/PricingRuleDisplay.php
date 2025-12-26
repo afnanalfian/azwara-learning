@@ -1,60 +1,110 @@
 <?php
 
 use App\Models\PricingRule;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Harga fixed tryout
+ * (specific → global)
  */
-function price_for_tryout(): float
+function price_for_tryout(?Model $tryout = null): float
 {
-    return PricingRule::where('product_type', 'tryout')
-        ->where('is_active', true)
-        ->value('fixed_price') ?? 0;
+    $query = PricingRule::active()
+        ->forProductType('tryout')
+        ->matchQty(1)
+        ->bestMatch();
+
+    if ($tryout) {
+        $rule = (clone $query)
+            ->forPriceable($tryout)
+            ->first();
+
+        if ($rule) {
+            return $rule->fixed_price ?? 0;
+        }
+    }
+
+    return $query->global()->value('fixed_price') ?? 0;
 }
 
 /**
- * Range harga meeting (untuk browse)
- * contoh: 10.000 – 20.000
+ * Range harga meeting (UNTUK BROWSE)
+ * support specific course → global
  */
-function price_range_meeting(): array
+function price_range_meeting(?Model $course = null): array
 {
-    return [
-        'min' => PricingRule::where('product_type', 'meeting')
-            ->where('is_active', true)
-            ->min('price_per_unit') ?? 0,
+    $base = PricingRule::active()
+        ->forProductType('meeting');
 
-        'max' => PricingRule::where('product_type', 'meeting')
-            ->where('is_active', true)
-            ->max('price_per_unit') ?? 0,
+    if ($course) {
+        $specific = (clone $base)
+            ->forPriceable($course)
+            ->get();
+
+        if ($specific->isNotEmpty()) {
+            return [
+                'min' => $specific->min('price_per_unit') ?? 0,
+                'max' => $specific->max('price_per_unit') ?? 0,
+            ];
+        }
+    }
+
+    return [
+        'min' => $base->global()->min('price_per_unit') ?? 0,
+        'max' => $base->global()->max('price_per_unit') ?? 0,
     ];
 }
 
 /**
- * Harga meeting berdasarkan qty (dipakai di cart / checkout)
+ * Harga meeting berdasarkan qty & course
  */
-function meeting_price_by_qty(int $qty): float
-{
-    $rule = PricingRule::where('product_type', 'meeting')
-        ->where('is_active', true)
-        ->where('min_qty', '<=', $qty)
-        ->where(fn ($q) =>
-            $q->whereNull('max_qty')
-              ->orWhere('max_qty', '>=', $qty)
-        )
-        ->orderByDesc('min_qty')
-        ->first();
+function meeting_price_by_qty(
+    int $qty,
+    ?Model $course = null
+): float {
 
-    return $rule?->price_per_unit ?? 0;
+    $query = PricingRule::active()
+        ->forProductType('meeting')
+        ->matchQty($qty)
+        ->bestMatch();
+
+    if ($course) {
+        $rule = (clone $query)
+            ->forPriceable($course)
+            ->first();
+
+        if ($rule) {
+            return $rule->price_per_unit ?? 0;
+        }
+    }
+
+    return $query
+        ->global()
+        ->value('price_per_unit') ?? 0;
 }
 
 /**
  * Harga full course
+ * (specific course → global)
  */
-function price_for_course_package(): float
+function price_for_course_package(?Model $course = null): float
 {
-    return PricingRule::where('product_type', 'course_package')
-        ->where('is_active', true)
-        ->value('fixed_price') ?? 0;
+    $query = PricingRule::active()
+        ->forProductType('course_package')
+        ->matchQty(1)
+        ->bestMatch();
+
+    if ($course) {
+        $rule = (clone $query)
+            ->forPriceable($course)
+            ->first();
+
+        if ($rule) {
+            return $rule->fixed_price ?? 0;
+        }
+    }
+
+    return $query->global()->value('fixed_price') ?? 0;
 }
 
 /**
@@ -62,7 +112,9 @@ function price_for_course_package(): float
  */
 function price_for_addon(): float
 {
-    return PricingRule::where('product_type', 'addon')
-        ->where('is_active', true)
+    return PricingRule::active()
+        ->forProductType('addon')
+        ->matchQty(1)
+        ->global()
         ->value('fixed_price') ?? 0;
 }

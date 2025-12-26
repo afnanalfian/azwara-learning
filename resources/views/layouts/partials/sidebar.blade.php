@@ -6,7 +6,7 @@
 
 <aside id="sidebar"
        class="fixed md:static z-50 inset-y-0 left-0 w-64
-              h-screen
+              min-h-screen
               bg-azwara-lighter dark:bg-azwara-darker
               border-r border-gray-200 dark:border-azwara-darkest
               transform -translate-x-full

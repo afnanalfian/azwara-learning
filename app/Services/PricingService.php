@@ -4,25 +4,37 @@ namespace App\Services;
 
 use App\Models\Cart;
 use App\Models\PricingRule;
+use Illuminate\Database\Eloquent\Model;
 use Exception;
+use LogicException;
+use Illuminate\Support\Facades\Log;
+
 
 class PricingService
 {
-    /**
-     * Hitung ulang cart (dipakai saat update qty & checkout)
-     */
+    /* ============================================
+     | CART TOTAL
+     ============================================ */
     public function calculateCartTotal(Cart $cart): array
     {
-        $cart->load('items.product');
+        $cart->load('items.product.productable');
 
         $items = [];
         $grandTotal = 0;
 
+        /**
+         * 1. HITUNG MEETING PER COURSE
+         */
+        $meetingPrices = $this->meetingUnitPricesPerCourse($cart);
+
         foreach ($cart->items as $item) {
-            $unitPrice = $this->determineUnitPrice(
-                $item->product->type,
-                $item->qty
-            );
+            $unitPrice = match ($item->product->type) {
+                'meeting' => $meetingPrices[
+                    $item->product->productable->id
+                ] ?? 0,
+
+                default => $item->price_snapshot,
+            };
 
             $lineTotal = $unitPrice * $item->qty;
 
@@ -43,95 +55,185 @@ class PricingService
         ];
     }
 
-    /**
-     * Harga satuan berdasarkan pricing rules
-     */
+    /* ============================================
+     | UNIT PRICE NON-MEETING
+     ============================================ */
     public function determineUnitPrice(
         string $productType,
         int $qty,
-        ?Cart $cart = null
+        ?Model $priceable = null
     ): float {
 
         if ($productType === 'meeting') {
-            throw new \LogicException(
-                'Gunakan meetingUnitPriceFromCart() untuk product meeting'
+            throw new LogicException(
+                'Gunakan meetingUnitPricesPerCourse() untuk product meeting'
             );
         }
 
-        $rule = PricingRule::where('product_type', $productType)
-            ->where('is_active', true)
-            ->where('min_qty', '<=', $qty)
-            ->where(function ($q) use ($qty) {
-                $q->whereNull('max_qty')
-                ->orWhere('max_qty', '>=', $qty);
-            })
-            ->orderBy('min_qty', 'desc')
+        $rule = $this->resolvePricingRule(
+            productType: $productType,
+            qty: $qty,
+            priceable: $priceable
+        );
+
+        return $rule->price ?? 0; // Gunakan accessor getPriceAttribute()
+    }
+
+    /* ============================================
+     | MEETING UNIT PRICE PER COURSE
+     ============================================ */
+    public function meetingUnitPricesPerCourse(Cart $cart): array
+    {
+        $cart->loadMissing([
+            'items.product.productable.productable'
+        ]);
+
+        $meetingItems = $cart->items->filter(
+            fn ($item) => $item->product->type === 'meeting'
+        );
+
+        $grouped = [];
+
+        foreach ($meetingItems as $item) {
+            // Akses meeting melalui productable->productable
+            $meeting = $item->product->productable?->productable;
+
+            if (!$meeting || !isset($meeting->course_id)) {
+                continue;
+            }
+
+            $courseId = $meeting->course_id;
+
+            if (!isset($grouped[$courseId])) {
+                $grouped[$courseId] = [
+                    'qty' => 0,
+                    'course' => null
+                ];
+            }
+
+            $grouped[$courseId]['qty'] += $item->qty;
+
+            if (!$grouped[$courseId]['course']) {
+                $grouped[$courseId]['course'] = \App\Models\Course::find($courseId);
+            }
+        }
+
+        $prices = [];
+
+        foreach ($grouped as $courseId => $data) {
+            if ($courseId === 0 || !$data['course']) continue;
+
+            try {
+                $rule = $this->resolvePricingRule(
+                    productType: 'meeting',
+                    qty: $data['qty'],
+                    priceable: $data['course']
+                );
+
+                if (!$rule->price_per_unit) {
+                    throw new Exception(
+                        "Meeting pricing rule invalid for course {$courseId}"
+                    );
+                }
+
+                $prices[$courseId] = $rule->price_per_unit;
+            } catch (\Exception $e) {
+                // Log error dan beri harga default
+                Log::error('Pricing error for course ' . $courseId, [
+                    'error' => $e->getMessage(),
+                    'qty' => $data['qty']
+                ]);
+
+                $prices[$courseId] = 0;
+            }
+        }
+
+        return $prices;
+    }
+
+    /* ============================================
+     | GET PRICEABLE FOR PRODUCT
+     | Convert product -> priceable yang sesuai dengan pricing rules
+     ============================================ */
+    public function getPriceableForProduct($product): ?Model
+    {
+        if (!$product->productable) {
+            return null;
+        }
+
+        $productable = $product->productable;
+
+        return match ($product->type) {
+            'meeting' => $productable->productable->course ?? null, // Meeting -> Course
+            'course_package' => $productable->productable ?? null, // Product -> Course
+            'tryout' => $productable->productable ?? null, // Exam dari productable
+            'addon' => null, // Addon global
+            default => null,
+        };
+    }
+
+    /* ============================================
+     | CORE PRICING RESOLVER
+     | priority: specific → global
+     ============================================ */
+    protected function resolvePricingRule(
+        string $productType,
+        int $qty,
+        ?Model $priceable = null
+    ): PricingRule {
+
+        $baseQuery = PricingRule::active()
+            ->forProductType($productType)
+            ->matchQty($qty);
+
+        /**
+         * PRICEABLE-SPECIFIC
+         */
+        if ($priceable) {
+            $rule = (clone $baseQuery)
+                ->where('priceable_type', get_class($priceable))
+                ->where('priceable_id', $priceable->id)
+                ->bestMatch()
+                ->first();
+
+            if ($rule) {
+                return $rule;
+            }
+        }
+
+        /**
+         * GLOBAL FALLBACK
+         */
+        $rule = (clone $baseQuery)
+            ->whereNull('priceable_type')
+            ->whereNull('priceable_id')
+            ->bestMatch()
             ->first();
 
         if (! $rule) {
-            throw new \Exception("Pricing rule missing for {$productType} (qty={$qty})");
+            throw new Exception(
+                "Pricing rule missing for {$productType} (qty={$qty})" .
+                ($priceable ? " priceable: " . get_class($priceable) . " #" . $priceable->id : "")
+            );
         }
 
-        return $rule->fixed_price ?? $rule->price_per_unit;
+        return $rule;
     }
 
-
-    /**
-     * Harga addon (flat, qty selalu 1)
-     */
+    /* ============================================
+     | FLAT PRICE HELPERS
+     ============================================ */
     public function addonPrice(): float
     {
-        $rule = PricingRule::where('product_type', 'addon')
-            ->where('is_active', true)
-            ->first();
-
-        if (! $rule || ! $rule->fixed_price) {
-            throw new Exception('Addon pricing rule missing');
-        }
-
-        return $rule->fixed_price;
+        return $this->resolvePricingRule('addon', 1)->price;
     }
 
-    /**
-     * Harga course package (flat)
-     */
-    public function coursePackagePrice(): float
+    public function coursePackagePrice(?Model $course = null): float
     {
-        $rule = PricingRule::where('product_type', 'course_package')
-            ->where('is_active', true)
-            ->first();
-
-        if (! $rule) {
-            throw new Exception('Course package pricing rule missing');
-        }
-
-        return $rule->fixed_price ?? 0;
+        return $this->resolvePricingRule(
+            'course_package',
+            1,
+            $course
+        )->price;
     }
-    public function meetingUnitPriceFromCart(Cart $cart): float
-    {
-        $totalQty = $cart->items()
-            ->whereHas('product', fn ($q) => $q->where('type', 'meeting'))
-            ->sum('qty'); // ✅ BUKAN count()
-
-        if ($totalQty < 1) {
-            throw new Exception('Meeting qty invalid');
-        }
-
-        $rule = PricingRule::where('product_type', 'meeting')
-            ->where('is_active', true)
-            ->where('min_qty', '<=', $totalQty)
-            ->where(function ($q) use ($totalQty) {
-                $q->whereNull('max_qty')
-                ->orWhere('max_qty', '>=', $totalQty);
-            })
-            ->orderBy('min_qty', 'desc')
-            ->first();
-
-        if (! $rule) {
-            throw new Exception("Pricing rule missing for meeting (qty={$totalQty})");
-        }
-
-        return $rule->price_per_unit;
-    }
-
 }

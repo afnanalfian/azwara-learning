@@ -5,7 +5,6 @@
 
     {{-- HEADER --}}
     <div class="flex items-start justify-between gap-4">
-
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
             Etalase Pembelajaran
         </h1>
@@ -39,7 +38,32 @@
         </a>
 
     </div>
+    {{-- =========================
+    EMPTY STATE (ALL OWNED)
+    ========================== --}}
+    @if($courses->isEmpty() && $tryouts->isEmpty())
+        <div class="rounded-2xl border border-dashed
+                    border-emerald-300 dark:border-emerald-700
+                    bg-emerald-50 dark:bg-emerald-900/20
+                    p-10 text-center">
 
+            <h2 class="text-xl font-semibold text-emerald-700 dark:text-emerald-300">
+                🎉 Anda sudah memiliki akses semua produk pembelajaran
+            </h2>
+
+            <p class="mt-2 text-sm text-emerald-600 dark:text-emerald-400">
+                Semua course, meeting, dan tryout sudah terbuka.
+                Silakan lanjutkan belajar dan kerjakan ujian yang tersedia.
+            </p>
+
+            <a href="{{ route('dashboard.redirect') }}"
+            class="inline-block mt-6 px-6 py-3 rounded-xl
+                    bg-emerald-600 hover:bg-emerald-700
+                    text-white font-semibold transition">
+                Ke Dashboard
+            </a>
+        </div>
+    @endif
     {{-- =========================
        COURSE PACKAGE
     ========================== --}}
@@ -65,12 +89,14 @@
                                 {{ $course->description }}
                             </p>
                         @endif
-
                         <p class="font-semibold text-primary dark:text-azwara-lighter text-sm">
+                            @php
+                                $range = price_range_meeting($course);
+                            @endphp
                             Harga Pertemuan:
-                            Rp {{ number_format(price_range_meeting()['min'], 0, ',', '.') }}
+                            Rp {{ number_format($range['min'], 0, ',', '.') }}
                             –
-                            Rp {{ number_format(price_range_meeting()['max'], 0, ',', '.') }}
+                            Rp {{ number_format($range['max'], 0, ',', '.') }}
                         </p>
 
                         <a href="{{ route('browse.course', $course->id) }}"
@@ -91,7 +117,7 @@
 
 
     {{-- =========================
-       TRYOUT
+    TRYOUT
     ========================== --}}
     @if($tryouts->isNotEmpty())
         <section class="space-y-4">
@@ -117,33 +143,36 @@
                         @endif
 
                         <p class="font-semibold text-primary dark:text-azwara-lighter text-sm">
-                            Rp {{ number_format(price_for_tryout(), 0, ',', '.') }}
+                            Rp {{ number_format(price_for_tryout($t), 0, ',', '.') }}
                         </p>
 
+                        {{-- GUNAKAN ACCESSOR $t->product (bukan $t->productable) --}}
                         @if ($t->product)
                             @php
-                                $productId = $t->product->product->id;
+                                // AMBIL PRODUCT_ID DARI ACCESSOR
+                                $productId = $t->product->id;
                                 $inCart    = in_array($productId, $cartProductIds);
 
+                                // CEK JIKA TRYOUT INI MILIK COURSE TERTENTU
                                 $courseId  = optional($t->owner)->id;
                                 $locked    = $courseId
-                                    ? in_array($courseId, $courseProductIdsInCart)
+                                    ? in_array($courseId, $courseIdsInCart)
                                     : false;
                             @endphp
 
                             @if ($locked)
                                 <button disabled
                                         class="mt-5 block w-full rounded-xl
-                                               bg-gray-300 text-gray-600
-                                               cursor-not-allowed">
+                                            bg-gray-300 text-gray-600
+                                            cursor-not-allowed">
                                     Termasuk Full Course
                                 </button>
 
                             @elseif ($inCart)
                                 <button disabled
                                         class="mt-5 block w-full rounded-xl
-                                               bg-gray-400 text-white
-                                               cursor-not-allowed">
+                                            bg-gray-400 text-white
+                                            cursor-not-allowed">
                                     Sudah di Keranjang
                                 </button>
 
@@ -151,10 +180,14 @@
                                 <button type="button"
                                         data-product-id="{{ $productId }}"
                                         class="add-to-cart-btn mt-5 block w-full rounded-xl
-                                               bg-primary text-white py-3">
+                                            bg-primary text-white py-3">
                                     Tambah ke Cart
                                 </button>
                             @endif
+                        @else
+                            <p class="text-sm text-red-500 mt-5">
+                                Produk tidak tersedia
+                            </p>
                         @endif
 
                     </div>

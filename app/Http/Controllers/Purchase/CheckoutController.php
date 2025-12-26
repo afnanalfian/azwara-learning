@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Purchase;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Payment;
@@ -138,7 +139,16 @@ class CheckoutController extends Controller
         $order->update([
             'status' => 'paid',
         ]);
+        $admins = User::role('admin')->get();
 
+        foreach ($admins as $admin) {
+            notify_user(
+                $admin,
+                "Order #{$order->id} baru masuk dan menunggu konfirmasi pembayaran.",
+                true,
+                route('orders.show', $order)
+            );
+        }
         return redirect()
             ->route('checkout.waiting', $order)
             ->with('success', 'Bukti pembayaran berhasil diupload');

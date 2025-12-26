@@ -21,7 +21,7 @@
 </head>
 
 <body
-  class="h-screen overflow-hidden flex flex-col
+  class="min-h-screen overflow-hidden flex flex-col
          bg-gradient-to-br from-azwara-lighter via-white to-azwara-light/30
          dark:bg-brand-gradient bg-fixed
          text-azwara-darker dark:text-azwara-lighter

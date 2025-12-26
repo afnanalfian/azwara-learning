@@ -33,13 +33,13 @@ class BrowseController extends Controller
             ->get();
 
         /* ==========================
-         * TRYOUTS (GLOBAL)
-         * ========================== */
+        * TRYOUTS (GLOBAL)
+        * ========================== */
         $tryouts = collect();
 
         if (! $hasTryoutAccess) {
             $tryouts = Exam::query()
-                ->with('product')
+                ->with(['productable.product']) // GANTI: product menjadi productable
                 ->where('type', 'tryout')
                 ->whereNull('deleted_at')
                 ->get();
@@ -65,8 +65,14 @@ class BrowseController extends Controller
                 )
                 ->with('product.productable.productable')
                 ->get()
-                ->pluck('product.productable.productable.id')
-                ->filter()
+                ->filter(fn ($item) =>
+                    $item->product->type === 'course_package'
+                    && $item->product->productable
+                    && $item->product->productable->productable instanceof Course
+                )
+                ->map(fn ($item) =>
+                    $item->product->productable->productable->id
+                )
                 ->unique()
                 ->values()
                 ->toArray()
@@ -87,13 +93,14 @@ class BrowseController extends Controller
      */
     public function course(Course $course)
     {
+        $course->load('coursePackage.product');
         $user = Auth::user();
 
         $ownedCourseIds  = $user?->ownedCourseIds() ?? [];
         $ownedMeetingIds = $user?->ownedMeetingIds() ?? [];
 
         $meetings = Meeting::query()
-            ->with('product')
+            ->with('productRelation') // GANTI: product menjadi productable.product
             ->where('course_id', $course->id)
             ->whereNull('deleted_at')
 
