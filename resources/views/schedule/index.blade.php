@@ -39,7 +39,7 @@
         <div class="flex flex-wrap gap-2">
             <a href="{{ route('schedule.index', ['month' => $prev->month, 'year' => $prev->year]) }}"
                class="px-4 py-2 rounded-lg text-sm
-                      bg-white dark:bg-gray-800 dark:text-azwara-lightest
+                      bg-white dark:bg-gray-800
                       border border-gray-200 dark:border-gray-700
                       hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                 ← Sebelumnya
@@ -53,7 +53,7 @@
 
             <a href="{{ route('schedule.index', ['month' => $next->month, 'year' => $next->year]) }}"
                class="px-4 py-2 rounded-lg text-sm
-                      bg-white dark:bg-gray-800 dark:text-azwara-lightest
+                      bg-white dark:bg-gray-800
                       border border-gray-200 dark:border-gray-700
                       hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                 Selanjutnya →

@@ -476,7 +476,7 @@ Route::get('/test-notif-admin', function () {
         $admin,
         'TEST NOTIFIKASI: Ini notifikasi percobaan ke admin',
         false,
-        '/dashboard'
+        '/dashboard/admin'
     );
 
     return 'Notif dikirim ke admin: ' . $admin->email;
