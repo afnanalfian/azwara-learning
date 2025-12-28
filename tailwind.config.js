@@ -16,7 +16,24 @@ export default {
             fontFamily: {
                 sans: ["Inter", "ui-sans-serif", "system-ui"],
             },
+    colors: {
+        azwara: {
+            darkest:  "#012A36", // Hijau teal sangat gelap
+            darker:   "#014F56", // Teal tua elegan
+            medium:   "#027373", // Teal medium, segar & profesional
+            light:    "#38A3A5", // Teal terang untuk hover
+            lighter:  "#A9D6D6", // Teal pastel lembut
+            lightest: "#F2EFE7", // Sangat terang, hampir putih
+        },
 
+        primary:   "#027373",   // Teal medium
+        secondary: "#014F56",   // Teal tua elegan
+    },
+
+    backgroundImage: {
+        "brand-gradient":
+            `linear-gradient(135deg, #012A36 0%, #014F56 80%, #027373 100%)`,
+    },
             // colors: {
             //     azwara: {
             //         darkest:  "#021024",
@@ -35,24 +52,7 @@ export default {
             //     "brand-gradient":
             //         `linear-gradient(135deg, #021024 0%, #052659 40%, #5483B3 100%)`,
             // },
-colors: {
-    azwara: {
-        darkest:  "#012A36", // Hijau teal sangat gelap
-        darker:   "#014F56", // Teal tua elegan
-        medium:   "#027373", // Teal medium, segar & profesional
-        light:    "#38A3A5", // Teal terang untuk hover
-        lighter:  "#A9D6D6", // Teal pastel lembut
-        lightest: "#F2EFE7", // Sangat terang, hampir putih
-    },
 
-    primary:   "#027373",   // Teal medium
-    secondary: "#014F56",   // Teal tua elegan
-},
-
-backgroundImage: {
-    "brand-gradient":
-        `linear-gradient(135deg, #012A36 0%, #014F56 80%, #027373 100%)`,
-},
 // colors: {
 //     azwara: {
 //         darkest:  "#0A0A0A", // Hitam pekat

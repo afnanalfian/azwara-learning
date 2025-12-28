@@ -100,7 +100,7 @@
     </div>
 
     {{-- ================= WEEKLY SALES ================= --}}
-    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+    <div class="bg-azwara-lightest dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
             <div>
                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Weekly Sales</h3>
@@ -123,7 +123,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
         {{-- MEETINGS THIS WEEK --}}
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+        <div class="bg-azwara-lightest dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Meetings This Week</h3>
                 <span class="text-sm text-gray-500">{{ $meetingsThisWeek->count() }} meetings</span>
@@ -185,7 +185,7 @@
         </div>
 
         {{-- PENDING ORDERS --}}
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+        <div class="bg-azwara-lightest dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Orders Waiting Confirmation</h3>
                 <span class="px-3 py-1 bg-yellow-100 dark:bg-yellow-500/20 text-yellow-800 dark:text-yellow-300 text-sm font-medium rounded-full">

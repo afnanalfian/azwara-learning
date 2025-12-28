@@ -7,7 +7,7 @@
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
         {{-- Title --}}
-        <h1 class="text-2xl font-bold text-azwara-darkest dark:text-azwara-lighter">
+        <h1 class="text-2xl font-bold text-azwara-darker dark:text-azwara-lighter">
             Daftar Quiz
         </h1>
 

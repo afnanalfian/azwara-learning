@@ -59,6 +59,7 @@ use App\Http\Controllers\Purchase\{
 |--------------------------------------------------------------------------
 */
 Route::get('/', [LandingController::class, 'index'])->name('home');
+Route::get('/tutorial', [LandingController::class, 'tutorial'])->name('tutorial');
 /*
 |--------------------------------------------------------------------------
 | AUTH DAN API ROUTES

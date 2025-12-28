@@ -6,7 +6,7 @@
     {{-- HEADER --}}
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-azwara-lightest">
+            <h1 class="text-2xl font-bold text-azwara-darker dark:text-azwara-lightest">
                 Pricing Rules
             </h1>
             <p class="text-sm text-gray-600 dark:text-gray-400">

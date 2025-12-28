@@ -6,7 +6,7 @@
     {{-- ================= HEADER ================= --}}
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">
+            <h1 class="text-2xl md:text-3xl font-bold text-azwara-darker dark:text-azwara-lighter">
                 Course Attendance Report
             </h1>
             <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
@@ -16,7 +16,7 @@
     </div>
 
     {{-- ================= FILTER FORM ================= --}}
-    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+    <div class="bg-azwara-lightest dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
         <form method="GET" action="{{ route('reports.course-attendance') }}" class="flex flex-col sm:flex-row gap-4">
             <div class="flex-1">
                 <label for="course_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -44,7 +44,7 @@
 
     {{-- ================= ATTENDANCE TABLE ================= --}}
     @if($selectedCourseId)
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+        <div class="bg-azwara-lightest dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
                 <div>
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
@@ -186,7 +186,7 @@
             @endif
         </div>
     @else
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700 text-center">
+        <div class="bg-azwara-lightest dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700 text-center">
             <div class="flex flex-col items-center justify-center">
                 <span class="text-4xl mb-4">📊</span>
                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">

@@ -28,9 +28,10 @@
     {{-- HEADER --}}
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-            <h1 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">
+            <h1 class="text-2xl font-bold text-azwara-darker dark:text-gray-100">
                 Jadwal Meeting
             </h1>
+
             <p class="text-sm text-gray-500 dark:text-gray-400">
                 {{ $current->translatedFormat('F Y') }}
             </p>
@@ -39,7 +40,7 @@
         <div class="flex flex-wrap gap-2">
             <a href="{{ route('schedule.index', ['month' => $prev->month, 'year' => $prev->year]) }}"
                class="px-4 py-2 rounded-lg text-sm
-                      bg-white dark:bg-gray-800 dark:text-azwara-lightest
+                      bg-azwara-lightest dark:bg-gray-800 dark:text-azwara-lightest
                       border border-gray-200 dark:border-gray-700
                       hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                 ← Sebelumnya
@@ -53,7 +54,7 @@
 
             <a href="{{ route('schedule.index', ['month' => $next->month, 'year' => $next->year]) }}"
                class="px-4 py-2 rounded-lg text-sm
-                      bg-white dark:bg-gray-800 dark:text-azwara-lightest
+                      bg-azwara-lightest dark:bg-gray-800 dark:text-azwara-lightest
                       border border-gray-200 dark:border-gray-700
                       hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                 Selanjutnya →
@@ -71,9 +72,9 @@
                             rounded-t-xl overflow-hidden
                             bg-gray-200 dark:bg-gray-700">
                     @foreach (['Sen','Sel','Rab','Kam','Jum','Sab','Min'] as $day)
-                        <div class="bg-gray-100 dark:bg-gray-800
+                        <div class="bg-azwara-darker dark:bg-gray-800
                                     text-center py-3 text-sm font-semibold
-                                    text-gray-600 dark:text-gray-300">
+                                    text-azwara-lightest dark:text-gray-300">
                             {{ $day }}
                         </div>
                     @endforeach
@@ -91,7 +92,7 @@
                         @endphp
 
                         <div class="min-h-[140px] p-2
-                                    bg-white dark:bg-gray-900
+                                    bg-azwara-lightest dark:bg-gray-900
                                     flex flex-col
                                     {{ $isCurrentMonth ? '' : 'opacity-40' }}">
 

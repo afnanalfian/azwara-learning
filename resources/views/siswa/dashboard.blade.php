@@ -29,7 +29,7 @@
             ];
         @endphp
         @foreach($cards as $c)
-        <div class="rounded-xl p-4 border bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+        <div class="rounded-xl p-4 border bg-azwara-lighter dark:bg-gray-800 dark:border-gray-700">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-xs text-gray-500">{{ $c['label'] }}</p>
@@ -42,7 +42,7 @@
     </div>
 
     {{-- MY COURSES --}}
-    <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 border dark:border-gray-700">
+    <div class="bg-azwara-lightest dark:bg-gray-800 rounded-2xl p-4 border dark:border-gray-700">
         <div class="flex items-center justify-between mb-4">
             <h3 class="font-semibold text-gray-800 dark:text-white">My Courses</h3>
             <a href="{{ route('course.index') }}" class="text-sm text-blue-600">View all</a>
@@ -74,7 +74,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
         {{-- MEETINGS --}}
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 border dark:border-gray-700">
+        <div class="bg-azwara-lightest dark:bg-gray-800 rounded-2xl p-4 border dark:border-gray-700">
             <h3 class="font-semibold mb-4 text-gray-800 dark:text-white">
                 Meetings This Week
             </h3>
@@ -100,7 +100,7 @@
         <div class="space-y-6">
 
             {{-- TODAY QUIZ --}}
-            <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 border dark:border-gray-700">
+            <div class="bg-azwara-lightest dark:bg-gray-800 rounded-2xl p-4 border dark:border-gray-700">
                 <h3 class="font-semibold mb-4 text-gray-800 dark:text-white">Today's Quiz</h3>
                 <div class="space-y-3">
                     @forelse($todayQuizzes as $quiz)
@@ -123,7 +123,7 @@
             </div>
 
             {{-- TRYOUTS --}}
-            <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 border dark:border-gray-700">
+            <div class="bg-azwara-lightest dark:bg-gray-800 rounded-2xl p-4 border dark:border-gray-700">
                 <div class="flex justify-between mb-4">
                     <h3 class="font-semibold text-gray-800 dark:text-white">Upcoming Tryouts</h3>
                     <a href="{{ route('exams.index',['type'=>'tryout']) }}" class="text-sm text-blue-600">View all</a>

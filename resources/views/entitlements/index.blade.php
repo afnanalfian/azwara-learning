@@ -6,7 +6,7 @@
     {{-- HEADER --}}
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+            <h1 class="text-2xl font-bold text-azwara-darker dark:text-white">
                 Hak Akses Siswa
             </h1>
             <p class="text-sm text-gray-600 dark:text-gray-400">
@@ -23,7 +23,7 @@
                 placeholder="Cari nama / email siswa..."
                 class="w-full rounded-xl
                        border-gray-300 dark:border-white/10
-                       bg-white dark:bg-azwara-darkest
+                       bg-azwara-lightest dark:bg-azwara-darkest
                        text-sm dark:text-white
                        focus:ring-primary focus:border-primary">
         </form>
@@ -35,7 +35,7 @@
         @forelse($users as $user)
             <div
                 class="rounded-2xl p-5
-                       bg-white dark:bg-azwara-darkest
+                       bg-azwara-lightest dark:bg-azwara-darkest
                        border border-gray-200 dark:border-azwara-darker">
 
                 {{-- USER HEADER --}}

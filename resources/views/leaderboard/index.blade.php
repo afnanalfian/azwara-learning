@@ -7,7 +7,7 @@
     {{-- ================= HEADER ================= --}}
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <h1 class="text-3xl font-bold text-azwara-darkest dark:text-white">
+            <h1 class="text-2xl font-bold text-azwara-darker dark:text-white">
                 🏆 Leaderboard Siswa
             </h1>
             <p class="text-sm text-gray-600 dark:text-gray-400">
@@ -26,7 +26,7 @@
     </div>
 
     {{-- ================= TABLE CARD ================= --}}
-    <div class="bg-white/80 dark:bg-secondary/80
+    <div class="bg-azwara-lightest dark:bg-secondary/80
                 backdrop-blur rounded-2xl
                 border border-azwara-light/30 dark:border-white/10
                 shadow-sm overflow-hidden">
@@ -34,8 +34,8 @@
         <table class="w-full text-md">
             {{-- ===== HEADER DESKTOP ===== --}}
             <thead class="hidden md:table-header-group
-                        bg-azwara-lightest dark:bg-white/5
-                        text-azwara-darkest dark:text-gray-300">
+                        bg-azwara-darker dark:bg-white/5
+                        text-azwara-lightest dark:text-gray-300">
                 <tr>
                     <th class="px-4 py-3 text-left w-20">Rank</th>
                     <th class="px-4 py-3 text-left">Nama</th>

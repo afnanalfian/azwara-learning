@@ -19,7 +19,7 @@
         <a href="{{ route('home') }}" class="navbar-brand p-0">
             <h1 class="display-6 text-primary m-0"><i class="fas fa-envelope me-3"></i>Mailler</h1>
             <!-- <img src="img/logo.png" alt="Logo"> -->
-        </a>
+        </a>git
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
             <span class="fa fa-bars"></span>
         </button>

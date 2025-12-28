@@ -6,7 +6,7 @@
     {{-- ================= HEADER ================= --}}
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">
+            <h1 class="text-2xl md:text-2xl font-bold text-azwara-darker dark:text-white">
                 Laporan Pemasukan
             </h1>
             <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
@@ -103,7 +103,7 @@
     </div>
 
     {{-- ================= FILTER FORM ================= --}}
-    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+    <div class="bg-azwara-lightest dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
         <form method="GET" action="{{ route('reports.income') }}" class="flex flex-col sm:flex-row gap-4 items-end">
             <div class="flex-1">
                 <label for="month" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -132,7 +132,7 @@
     </div>
 
     {{-- ================= PAYMENTS TABLE ================= --}}
-    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+    <div class="bg-azwara-lightest dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
             <div>
                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white">

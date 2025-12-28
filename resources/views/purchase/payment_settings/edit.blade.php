@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-4xl mx-auto space-y-6">
+<div class="max-w-7xl mx-auto space-y-6">
 
     <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+        <h1 class="text-2xl font-bold text-azwara-darker dark:text-white">
             Pengaturan Pembayaran
         </h1>
         <p class="text-sm text-gray-600 dark:text-gray-400">
@@ -17,7 +17,7 @@
           enctype="multipart/form-data"
           class="space-y-6 p-6 rounded-2xl border
                  dark:border-azwara-darker
-                 bg-white dark:bg-azwara-darkest">
+                 bg-azwara-lightest dark:bg-azwara-darkest">
 
         @csrf
 
@@ -51,7 +51,7 @@
             </label>
 
             <textarea name="payment_instruction" rows="4"
-                      class="mt-1 w-full rounded-xl border-gray-300 dark:text-white
+                      class="mt-1 w-full rounded-xl border-gray-300 dark:text-white bg-azwara-lightest
                              dark:bg-azwara-darkest dark:border-azwara-darker
                              focus:ring-primary focus:border-primary">{{ old('payment_instruction', $settings['payment_instruction'] ?? '') }}</textarea>
         </div>
@@ -63,7 +63,7 @@
             </label>
 
             <select name="active_payment_method"
-                    class="w-full rounded-xl border-gray-300 dark:text-white
+                    class="w-full rounded-xl bg-azwara-lightest border-gray-300 dark:text-white
                            dark:bg-azwara-darkest dark:border-azwara-darker
                            focus:ring-primary focus:border-primary">
 
