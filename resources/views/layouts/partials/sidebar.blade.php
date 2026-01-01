@@ -7,11 +7,13 @@
 <aside id="sidebar"
        class="fixed md:static z-50 inset-y-0 left-0 w-64
               min-h-screen
-              bg-azwara-lighter dark:bg-azwara-darker
+              bg-azwara-lightest md:bg-azwara-lighter
+              dark:bg-azwara-darker
               border-r border-gray-200 dark:border-azwara-darkest
               transform -translate-x-full
               transition-transform duration-300
               flex flex-col">
+
 
     <div class="flex-shrink-0 flex flex-col items-center py-6 gap-4">
 
