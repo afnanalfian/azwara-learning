@@ -100,7 +100,7 @@
                     {{-- CTA Buttons --}}
                     <div class="flex flex-col sm:flex-row gap-4">
                         <a
-                            href="https://wa.me/6285141339645?text=Halo%20saya%20tertarik%20dengan%kelas%atau%tryout%di%Azwara%Learning"
+                            href="https://wa.me/6285141339645?text=Halo%20saya%20tertarik%20dengan%20kelas%20atau%20tryout%20di%20Azwara%20Learning"
                             target="_blank"
                             class="inline-flex items-center justify-center gap-3 px-8 py-4 bg-primary text-white font-semibold rounded-lg hover:bg-azwara-medium transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl shadow-lg group"
                         >
