@@ -50,10 +50,10 @@
 
         {{-- PRODUCT TYPE --}}
         <div>
-            <label class="block text-sm font-medium">Tipe Produk</label>
+            <label class="block text-sm font-medium dark:text-azwara-lightest">Tipe Produk</label>
             <select name="product_type" id="product_type"
                     class="mt-1 w-full rounded-xl border-gray-300
-                           dark:bg-azwara-darkest dark:border-azwara-darker">
+                           dark:bg-azwara-darkest dark:text-azwara-lightest dark:border-azwara-darker">
                 <option value="meeting">Meeting</option>
                 <option value="tryout">Tryout</option>
                 <option value="course_package">Course Package</option>
@@ -63,9 +63,9 @@
 
         {{-- SCOPE --}}
         <div>
-            <label class="block text-sm font-medium">Berlaku Untuk</label>
+            <label class="block text-sm font-medium dark:text-azwara-lightest">Berlaku Untuk</label>
             <select name="price_scope" id="price_scope"
-                    class="mt-1 w-full rounded-xl border-gray-300
+                    class="mt-1 w-full rounded-xl border-gray-300 dark:text-azwara-lightest
                            dark:bg-azwara-darkest dark:border-azwara-darker">
                 <option value="global">Global (Semua)</option>
                 <option value="specific">Spesifik</option>
@@ -76,11 +76,11 @@
         <div id="specific-wrapper" class="hidden space-y-4">
             {{-- Hanya akan menampilkan SATU input berdasarkan product_type --}}
             <div id="course-select" class="hidden">
-                <label class="block text-sm font-medium">
+                <label class="block text-sm font-medium dark:text-azwara-lightest">
                     Course
                 </label>
                 <select name="priceable_id" id="course-priceable"
-                        class="mt-1 w-full rounded-xl border-gray-300
+                        class="mt-1 w-full rounded-xl border-gray-300 dark:text-azwara-lightest
                                dark:bg-azwara-darkest dark:border-azwara-darker">
                     @foreach($courses as $course)
                         <option value="{{ $course->id }}">
@@ -92,11 +92,11 @@
 
             {{-- TRYOUT --}}
             <div id="tryout-select" class="hidden">
-                <label class="block text-sm font-medium">
+                <label class="block text-sm font-medium dark:text-azwara-lightest">
                     Tryout
                 </label>
                 <select name="priceable_id" id="tryout-priceable"
-                        class="mt-1 w-full rounded-xl border-gray-300
+                        class="mt-1 w-full rounded-xl border-gray-300 dark:text-azwara-lightest
                                dark:bg-azwara-darkest dark:border-azwara-darker">
                     @foreach($tryouts as $tryout)
                         <option value="{{ $tryout->id }}">
@@ -112,9 +112,9 @@
 
         {{-- PRICING TYPE --}}
         <div>
-            <label class="block text-sm font-medium">Tipe Harga</label>
+            <label class="block text-sm font-medium dark:text-azwara-lightest">Tipe Harga</label>
             <select name="pricing_type" id="pricing_type"
-                    class="mt-1 w-full rounded-xl border-gray-300
+                    class="mt-1 w-full rounded-xl border-gray-300 dark:text-azwara-lightest
                            dark:bg-azwara-darkest dark:border-azwara-darker">
                 <option value="per_unit">Per Unit</option>
                 <option value="fixed">Harga Tetap</option>
@@ -124,40 +124,40 @@
         {{-- QTY RANGE --}}
         <div class="grid grid-cols-2 gap-4">
             <div>
-                <label class="block text-sm font-medium">Minimum Qty</label>
+                <label class="block text-sm font-medium dark:text-azwara-lightest">Minimum Qty</label>
                 <input type="number" name="min_qty" min="1"
-                       class="mt-1 w-full rounded-xl border-gray-300
+                       class="mt-1 w-full rounded-xl border-gray-300 dark:text-azwara-lightest
                               dark:bg-azwara-darkest dark:border-azwara-darker">
             </div>
 
             <div>
-                <label class="block text-sm font-medium">
+                <label class="block text-sm font-medium dark:text-azwara-lightest">
                     Maksimum Qty (opsional)
                 </label>
                 <input type="number" name="max_qty" min="1"
-                       class="mt-1 w-full rounded-xl border-gray-300
+                       class="mt-1 w-full rounded-xl border-gray-300 dark:text-azwara-lightest
                               dark:bg-azwara-darkest dark:border-azwara-darker">
             </div>
         </div>
 
         {{-- PRICE --}}
         <div>
-            <label class="block text-sm font-medium">Harga</label>
+            <label class="block text-sm font-medium dark:text-azwara-lightest">Harga</label>
             <input type="number" name="price" id="price"
                    min="0" step="0.01"
-                   class="mt-1 w-full rounded-xl border-gray-300
+                   class="mt-1 w-full rounded-xl border-gray-300 dark:text-azwara-lightest
                           dark:bg-azwara-darkest dark:border-azwara-darker">
         </div>
 
         {{-- ACTIVE --}}
         <div class="flex items-center gap-3">
             <input type="checkbox" name="is_active" value="1" checked>
-            <span class="text-sm">Aktifkan pricing rule</span>
+            <span class="text-sm dark:text-azwara-lightest">Aktifkan pricing rule</span>
         </div>
 
         <div class="pt-4 flex justify-end gap-3">
             <a href="{{ route('pricing.index') }}"
-               class="px-5 py-2.5 rounded-xl border">
+               class="px-5 py-2.5 rounded-xl border dark:text-azwara-lightest">
                 Batal
             </a>
 
