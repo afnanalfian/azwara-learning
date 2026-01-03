@@ -21,11 +21,8 @@
                         <div class="absolute inset-0 rounded-full border-2 border-transparent group-hover:border-primary transition-all duration-300"></div>
                     </div>
                     <div class="flex flex-col">
-                        <span class="font-bold text-xl text-azwara-darkest leading-tight">
-                            Azwara
-                        </span>
-                        <span class="font-semibold text-base text-azwara-medium leading-tight">
-                            Learning
+                        <span class="font-bold text-2xl text-azwara-darkest leading-tight">
+                            Azwara<span class="text-primary">Learning</span>
                         </span>
                     </div>
                 </a>
